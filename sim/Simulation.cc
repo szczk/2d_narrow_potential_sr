@@ -10,7 +10,7 @@ inline ostream& operator<< ( ostream &out, point &cPoint )
 
 
 
-Simulation::Simulation ( Settings * set )  : rand ( nullptr ), potential(nullptr),  x0 ( 0.0 ),y0 ( 0.0 ), r ( 1.0 ) , verbose ( false ) 
+Simulation::Simulation ( Settings * set )  : rand ( nullptr ), potential ( nullptr ), meanEscapeTime ( nullptr ), x0 ( 0.0 ), y0 ( 0.0 ),  lastX ( 0.0 ), measureTime ( false ), verbose ( false )
 {
 
      this->settings = set;
@@ -32,7 +32,7 @@ void Simulation::destroy()
 
      if ( rand!=nullptr ) delete rand;
      if ( potential!=nullptr ) delete potential;
-
+     if ( meanEscapeTime!=nullptr ) delete meanEscapeTime;
 }
 
 
@@ -40,15 +40,12 @@ void Simulation::init()
 {
      cout << "initializing simulation"<<endl;
      this->rand = new Randoms();
-     
-     
-    //double beta = settings.getWaitingTimesParameter();
-   
-     double r = settings->get("radius");
-     
-     this->r_squared = r*r;
-     
-     
+
+
+     //double beta = settings.getWaitingTimesParameter();
+
+     this->meanEscapeTime = new RunningStat();
+
      //this->reset();
 }
 
@@ -56,15 +53,13 @@ void Simulation::init()
 void Simulation::reset()
 {
      //this->rand->reset();
-      
+
      if ( potential!=nullptr ) delete potential;
+     this->potential = new NarrowPotential2D ();
 
-     double eplus = this->settings->get("eplus");
-     double eminus = this->settings->get("eminus");
-     double T = this->settings->get("T");
+     this->measureTime = false;
+     this->lastX = 0.0;
 
-     this->potential = new Potential2D(this->rand, this->gamma, this->gamma, eplus * T, eminus*T );
- 
 //      cout << this->potential->toString() <<endl;
 
 }
@@ -72,7 +67,7 @@ void Simulation::reset()
 
 
 
-double Simulation::run ()
+void Simulation::run ()
 {
 
      this->reset();
@@ -91,18 +86,19 @@ double Simulation::run ()
 
 //   double endTime = 10.0;
 
-    
+
      point current_point;
 
      current_point.x = this->settings->getX0();
-     current_point.y = this->settings->getX0();
+     current_point.y = this->settings->getY0();
 
 
-     
+     double max_time = this->settings->get ( "max_time" );
 
-     
-     while ( inCircle ( current_point ) ) 
-     {
+
+     double timeInState = 0.0;
+
+     while ( t < max_time ) {
 
 
 //        cout << "t="<<t<<endl;
@@ -111,14 +107,14 @@ double Simulation::run ()
 
           switch ( noiseType ) {
           case 1:
-               v = rand->getAlphaStableVector( alpha, sigma  );
+               v = rand->getAlphaStableVector ( alpha, sigma );
                break;
           case 2:
           default:
                v = rand->getDicreteAlphaStableVector ( alpha, sigma );
                break;
           }
-     
+
 
           // grad V(x,y)
           vec potential = ( * ( this->potential ) ) ( current_point.x, current_point.y, t );
@@ -128,21 +124,36 @@ double Simulation::run ()
           current_point.x += -potential.x*dt  + v[0]*dL;
           current_point.y += -potential.y*dt  + v[1]*dL;
 
- 
           delete[] v;
           t+= dt;
-         
+
+          //do not measure until first state change
+          if ( !measureTime && stateChanged ( current_point.x ) ) {
+               measureTime = true;
+               //cout << " state changed first time! t = " << t << endl;
+          }
+
+          if ( measureTime ) {
+               if ( stateChanged ( current_point.x ) ) {
+                    // save time spent in state
+
+                    //cout << " state changed! time spent in state:" << timeInState << endl;
+                    this->meanEscapeTime->Push ( timeInState );
+
+                    timeInState = 0.0;
+               } else {
+                    timeInState+= dt;
+               }
+          }
+
+
+
+          this->lastX = current_point.x;
+
      }
 
-
-     return t;
 }
 
-
-bool Simulation::inCircle ( point& landing_point )
-{
-     return ( landing_point.x*landing_point.x + landing_point.y*landing_point.y < r_squared );
-}
 
 
 double Simulation::dotProduct ( const vec & v1, const vec & v2 )
@@ -164,6 +175,12 @@ void Simulation::norm ( vec & v )
      double d = sqrt ( pow ( v.x,2.0 ) + pow ( v.y,2.0 ) );
      v.x = v.x/d;
      v.y = v.y/d;
+}
+
+
+bool Simulation::stateChanged ( double& x )
+{
+     return ( x > 0.0 && lastX < 0.0 ) || ( x < 0.0 && lastX > 0.0 );
 }
 
 

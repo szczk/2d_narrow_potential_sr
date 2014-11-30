@@ -21,7 +21,6 @@ touch jobs_ids.txt
 
 tmpdir="/tmp/"
 storagedir="./"
-threads=4
 # /mnt/lustre/scratch/people/ufszczep/
 # /storage/ufszczep/
 
@@ -43,29 +42,22 @@ echo "\n"
 # zeby byla kropka w wynikach 'seq' a nie przecinek
 export LC_NUMERIC="en_US.UTF-8"
 
-pp=0
-ep=8.0
-em=0.0
-for alpha in $(seq -w 0.5 0.2 1.9)
+
+for alpha in $(seq -w 0.2 0.1 2.0)
 do
    for sigma in 1.0 #$(seq -w 0.2 0.2 5.0)
     do
-      for num in $(seq 1 10)
-        do
-      #   for pp in $(seq -5 0.1 5)
-       #   do
-	  echo "alpha = $alpha, sigma = $sigma, p = $pp, n = $num, ep= $ep, em= $em"
-	  file="a_"$alpha"_s_"$sigma"_p_"$pp"_ra__"$num"_ep_"$ep"_em_"$em".pbs"
+	  echo "alpha = $alpha, sigma = $sigma"
+	  file="a_"$alpha"_s_"$sigma"_SR.pbs"
 
 		  if [ ${USER} = "ufszczep" ];
 		  then
-		    cat pbs_template.tpl | sed -e "s/\${tmp}/$tmpdir/g" -e "s/\${storage}/$storagedir/g" -e "s/\${alpha}/$alpha/g" -e "s/\${sigma}/$sigma/g" -e "s/\${threads}/$threads/g" -e "s/\${num}/$num/g" -e "s/\${em}/$em/g" -e "s/\${ep}/$ep/g" -e "s/\${pp}/$pp/g" > $file
+		    cat pbs_template.tpl | sed -e "s/\${tmp}/$tmpdir/g" -e "s/\${storage}/$storagedir/g" -e "s/\${alpha}/$alpha/g" -e "s/\${sigma}/$sigma/g" -e "s/\${threads}/$threads/g" > $file
 		    qsub -f $file >> jobs_ids.txt
 		  else
-		    ./generator.x --alpha $alpha --noise $sigma --storage "$storagedir" --tmp "$tmpdir" --threads $threads --data_file_num $num
+		    ./generator.x --alpha $alpha --noise $sigma --storage "$storagedir" --tmp "$tmpdir"
 		  fi 
-       #  done
-      done
+
     done
 done
 

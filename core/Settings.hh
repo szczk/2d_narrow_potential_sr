@@ -221,6 +221,7 @@ public:
      void setX0 ( paramsType x0 ) {
           this->parameters["X0"] = x0;
      }
+     
      paramsType getY0() {
           return this->parameters["Y0"];
      }

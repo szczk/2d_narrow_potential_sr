@@ -3,7 +3,9 @@
 
 #include "../core/Randoms.hh"
 #include "../core/Settings.hh"
-#include "Potential2D.hh"
+
+#include "NarrowPotential2D.hh"
+#include "../analysis/RunningStat.hh"
 // #include "../main.hh"
 // #include <map>
 // #include <gsl/gsl_histogram2d.h>
@@ -32,19 +34,17 @@ private:
      Settings * settings;
      Randoms * rand;
      Potential2D * potential;
-
+     RunningStat * meanEscapeTime;
+     
 
      double x0 ;
      double y0 ;
-     double r ;
-     double r_squared;
 
-
-     double gamma;
-      
-    
+     
+     double lastX; // previous position (x)
+     bool measureTime;
      bool verbose;
-
+     
 
      /**
       * Initialize anything that needs to be initialized
@@ -61,13 +61,6 @@ private:
       * Reset all and prepare for new simulations
       */
      void reset();
-
-     /**
-      * if the given landing point is still in circle
-      */
-     bool inCircle ( point& );
-
-
      /**
       *  vectors dot product
       */
@@ -85,30 +78,23 @@ private:
      void norm ( vec & v );
 
 
+     
+     bool stateChanged( double & x) ;
 
 public:
      Simulation ( Settings * );
      ~Simulation();
 
-     void setGamma(double g) { if(g>0.0) this->gamma = g; }
-     void setRadius ( double r ) {
-          if ( r>0.0 )  {
-            this->r = r;
-            this->r_squared = r*r;
-          }
-          
-     }
 
-     /**
-      * symulacja az opusci okrag i zwraca t jaki uplynal
-      */
-     double run ( );
+     void run ( );
 
 
      void setVerbose ( bool v ) {
           this->verbose = v;
      }
 
+     
+     RunningStat * getMeanEscapeTime()  { return this->meanEscapeTime;}
 
 };
 

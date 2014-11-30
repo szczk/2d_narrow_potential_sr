@@ -1,7 +1,4 @@
 #include "main.hh"
-#include <gsl/gsl_histogram2d.h>
-#include <gsl/gsl_histogram.h>
-#include <fstream>
 
 
 
@@ -26,70 +23,40 @@ int main ( int argc, char **argv )
      double num = settings.getNtrajectories();
      int tenPerc = ( num>10 ) ? ( int ) ( num*0.1 ) : 1;
 
-
-     int noiseType = settings.get ( "NOISE_TYPE" );
-     double eplus = settings.get ( "eplus" );
-     double eminus = settings.get ( "eminus" );
      double alpha = settings.getJumpsParameter();
 
-
-//     double p = settings.get("GAMMA_P");
-
-     Simulation * sim = new Simulation ( &settings );
 
 
      cout << "entering loop"<<endl;
 
-     for ( double p = -5.0; p< 5.0; p += 0.1 ) 
-     {
-//       double p = 0.0;
-
-          double gamma = pow ( 10.0,p );
+     Simulation * sim = new Simulation ( &settings );
 
 
-          cout << " p = " << p << " gamma = " << gamma << endl;
+     char buffer[200];
+     sprintf ( buffer,"%s/%s_mean_escape_time.txt", settings.getStoragePath(), settings.getFullOutputFilesPrefix().c_str() );
 
-          sim->setGamma ( gamma );
+     ofstream output ( buffer );
 
-
-
-          char dataFile[200];
-          if ( settings.multipleOutputs() ) {
-               cout << " multiple outputs! generating file #" << settings.getMultipleOutputFilenum() <<endl;
-               //wielokrotny output, wyjsciowy plik dat musi miec numerek przyslany z zewnatrz
-
-               sprintf ( dataFile,"%s/%s_alpha_%1.2f_n%d_Ep_%1.1f_Em_%1.1f_g_%1.1f_xy_output_%d.dat",settings.getStoragePath(), settings.getFilesPrefix(), alpha,  noiseType, eplus,eminus, p , settings.getMultipleOutputFilenum() );
-          } else {
-               // wszystko do jednego pliku
-               sprintf ( dataFile,"%s/%s_alpha_%1.2f_n%d_Ep_%1.1f_Em_%1.1f_g_%1.1f_xy_output.dat",settings.getStoragePath(), settings.getFilesPrefix(), alpha ,  noiseType ,eplus,eminus, p );
+     
+     for ( int i =0; i < num ; i++ ) {
+          if ( i%tenPerc==0 ) {
+               cout << i<<"/"<<num<<endl;
           }
-
-
-
-          Datafile * data = Datafile::create ( dataFile );
-
-
-
-
-
-          for ( int i =0; i < num ; i++ ) {
-               if ( i%tenPerc==0 ) {
-                    cout << i<<"/"<<num<<endl;
-               }
-
-
-               double t = sim->run();
-
-               data->write ( t );
-
-          }
-
-//      output.close();
-          data->close();
-
-
+          sim->run ( );
      }
 
+     RunningStat * meanEscape = sim->getMeanEscapeTime();
+     double meanEscapeTime = meanEscape->Mean();
+     int count = meanEscape->NumDataValues();
+     meanEscape->Clear();
+
+     output << alpha << "\t" << meanEscapeTime << "\t" << count << "\n" << flush;
+
+
+
+     output.close();
+
+     delete sim;
 
      sys.finish();
      sys.printTimeSummary();
