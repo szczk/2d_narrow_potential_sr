@@ -22,7 +22,7 @@
 #          Set the name of the job (up to 15 characters, 
 #          no blank spaces, start with alphanumeric character)
 
-#PBS -N 2d_SR_a_${alpha}_s_${sigma}
+#PBS -N 2d_SR_a_${alpha}_s_${sigma}_nt_${nt}_pt_${pt}
 
 #          By default, the standard output and error streams are sent
 #          to files in the current working directory with names:
@@ -84,7 +84,7 @@ module add gcc
 module add gsl
 #module add libs/glibc/2.7
 
-./generator.x --alpha ${alpha} --noise ${sigma} --storage "$SCRATCH/2d_SR/"  --tmp "$SCRATCH" > $logs/SR_2d_a${alpha}_s${sigma}_p_${pp}_n${num}_ep${ep}_em${em}.log
+./generator.x --alpha ${alpha} --noise ${sigma} --storage "$SCRATCH/2d_SR/"  --tmp "$SCRATCH" --pt ${pt} --nt ${nt} > $logs/SR_2d_a${alpha}_s${sigma}_nt_${nt}_pt${pt}.log
 
 
 

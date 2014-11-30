@@ -43,21 +43,28 @@ echo "\n"
 export LC_NUMERIC="en_US.UTF-8"
 
 
-for alpha in $(seq -w 0.2 0.1 2.0)
-do
-   for sigma in 1.0 #$(seq -w 0.2 0.2 5.0)
-    do
-	  echo "alpha = $alpha, sigma = $sigma"
-	  file="a_"$alpha"_s_"$sigma"_SR.pbs"
+
+
+for nt in 1
+ do
+  for pt in 2
+   do
+     for alpha in $(seq -w 0.2 0.1 2.0)
+      do
+       for sigma in $(seq -w 0.2 0.5 6.0)
+         do
+	  echo "alpha = $alpha, sigma = $sigma, nt = $nt, pt = $pt"
+	  file="a_"$alpha"_s_"$sigma"_nt_"$nt"_pt_"$pt"_SR.pbs"
 
 		  if [ ${USER} = "ufszczep" ];
 		  then
-		    cat pbs_template.tpl | sed -e "s/\${tmp}/$tmpdir/g" -e "s/\${storage}/$storagedir/g" -e "s/\${alpha}/$alpha/g" -e "s/\${sigma}/$sigma/g" -e "s/\${threads}/$threads/g" > $file
+		    cat pbs_template.tpl | sed -e "s/\${tmp}/$tmpdir/g" -e "s/\${storage}/$storagedir/g" -e "s/\${alpha}/$alpha/g" -e "s/\${sigma}/$sigma/g" -e "s/\${nt}/$nt/g" -e "s/\${pt}/$pt/g" > $file
 		    qsub -f $file >> jobs_ids.txt
 		  else
-		    ./generator.x --alpha $alpha --noise $sigma --storage "$storagedir" --tmp "$tmpdir"
+		    ./generator.x --alpha $alpha --noise $sigma --storage "$storagedir" --tmp "$tmpdir" --pt $pt --nt $nt
 		  fi 
-
+         done
+       done 
     done
 done
 
