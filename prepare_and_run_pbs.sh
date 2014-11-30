@@ -49,9 +49,9 @@ for nt in 1
  do
   for pt in 2
    do
-     for alpha in $(seq -w 0.2 0.1 2.0)
+     for alpha in $(seq -w 0.2 0.2 2.0)
       do
-       for sigma in $(seq -w 0.2 0.5 6.0)
+       for sigma in $(seq -w 0.1 0.1 4.0)
          do
 	  echo "alpha = $alpha, sigma = $sigma, nt = $nt, pt = $pt"
 	  file="a_"$alpha"_s_"$sigma"_nt_"$nt"_pt_"$pt"_SR.pbs"
