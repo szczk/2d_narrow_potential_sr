@@ -26,9 +26,9 @@ storagedir="./"
 
 if [ ${USER} = "ufszczep" ];
 then
-  tmpdir="\/mnt\/lustre\/scratch\/people\/ufszczep\/"
+  tmpdir="\/mnt\/lustre\/scratch2\/people\/ufszczep\/"
 # storagedir="\/storage\/ufszczep\/"
-  storagedir="\/mnt\/lustre\/scratch\/people\/ufszczep\/output\/"
+  storagedir="\/mnt\/lustre\/scratch2\/people\/ufszczep\/output\/"
 
   threads=1
 fi 

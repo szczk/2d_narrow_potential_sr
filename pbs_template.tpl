@@ -22,7 +22,7 @@
 #          Set the name of the job (up to 15 characters, 
 #          no blank spaces, start with alphanumeric character)
 
-#PBS -N 2d_SR_a_${alpha}_s_${sigma}_p_${pp}_ep_${ep}_em_${em}_${num}
+#PBS -N 2d_SR_a_${alpha}_s_${sigma}
 
 #          By default, the standard output and error streams are sent
 #          to files in the current working directory with names:
@@ -67,15 +67,10 @@ echo " running job... "
 
 cd $PBS_O_HOME/2d_narrow_potential_sr
 
-# / tmp: /mnt/lustre/scratch/people/ufszczep/";
-# // storage: /storage/ufszczep/
 
 if [ ${USER} = "ufszczep" ];
 then
-#   tmpdir="\/mnt\/lustre\/scratch\/people\/ufszczep\/" 
   tmpdir=$SCRATCH
-# storagedir="\/storage\/ufszczep\/"
-#   storagedir="\/mnt\/lustre\/scratch\/people\/ufszczep\/output\/" $STORAGE
   storagedir=$STORAGE
   threads=1
 fi 
@@ -98,4 +93,3 @@ module add gsl
 # export GDFONTPATH=`pwd`/fonts/
 # export GNUPLOT_DEFAULT_GDFONT=LiberationSans-Regular
 
-# gnuplot /mnt/lustre/scratch/people/ufszczep/output/d_${noise}0_alpha${alpha}_beta${beta}_t100_plot.gnu
