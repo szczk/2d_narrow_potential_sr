@@ -5,6 +5,7 @@
 #include "../core/Settings.hh"
 
 #include "NarrowPotential2D.hh"
+#include "ModulatedPotential2D.hh"
 #include "../analysis/RunningStat.hh"
 // #include "../main.hh"
 // #include <map>

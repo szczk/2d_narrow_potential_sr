@@ -55,7 +55,20 @@ void Simulation::reset()
      //this->rand->reset();
 
      if ( potential!=nullptr ) delete potential;
-     this->potential = new NarrowPotential2D ();
+
+     int potentialType = this->settings->get ( "POTENTIAL_TYPE" );
+     
+     switch ( potentialType ) {
+     case 2:
+          //modulated potential
+          this->potential = new ModulatedPotential2D( this->settings->getFrequency());
+          break;
+     case 1:
+     default:
+          this->potential = new NarrowPotential2D ();
+          break;
+     }
+
 
      this->measureTime = false;
      this->lastX = 0.0;

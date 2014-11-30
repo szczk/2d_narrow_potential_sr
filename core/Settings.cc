@@ -278,6 +278,6 @@ string Settings::getFullOutputFilesPrefix()
      int noiseType = ( int ) get ( "NOISE_TYPE" );
      int potentialType = ( int ) get ( "POTENTIAL_TYPE" );
 
-     sprintf ( fullPrefix,"%s_a%1.2f_s%1.2f_nt%i", getFilesPrefix(),alpha , noise , noiseType );
+     sprintf ( fullPrefix,"%s_a%1.2f_s%1.2f_nt%i_pt%i", getFilesPrefix(),alpha , noise , noiseType, potentialType );
      return string ( fullPrefix );
 }
