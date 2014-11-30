@@ -35,7 +35,9 @@ int main ( int argc, char **argv )
      char buffer[200];
      sprintf ( buffer,"%s/%s_mean_escape_time.txt", settings.getStoragePath(), settings.getFullOutputFilesPrefix().c_str() );
 
+
      ofstream output ( buffer );
+     output << "#alpha\tmean_residence_time\tnoise_intensity\n";
 
      
      for ( int i =0; i < num ; i++ ) {
@@ -49,8 +51,10 @@ int main ( int argc, char **argv )
      double meanEscapeTime = meanEscape->Mean();
      int count = meanEscape->NumDataValues();
      meanEscape->Clear();
+     
+     double noise_d = settings.getNoiseIntensity();
 
-     output << alpha << "\t" << meanEscapeTime << "\t" << count << "\n" << flush;
+     output << alpha << "\t" << meanEscapeTime << "\t" << noise_d << "\n" << flush;
 
 
 
