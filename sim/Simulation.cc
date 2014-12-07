@@ -10,7 +10,7 @@ inline ostream& operator<< ( ostream &out, point &cPoint )
 
 
 
-Simulation::Simulation ( Settings * set )  : rand ( nullptr ), potential ( nullptr ), meanEscapeTime ( nullptr ), x0 ( 0.0 ), y0 ( 0.0 ),  lastX ( 0.0 ), measureTime ( false ), verbose ( false )
+Simulation::Simulation ( Settings * set )  : rand ( nullptr ), potential ( nullptr ), dataFile ( nullptr ), x0 ( 0.0 ), y0 ( 0.0 ),  lastX ( 0.0 ), measureTime ( false ), verbose ( false )
 {
 
      this->settings = set;
@@ -32,7 +32,7 @@ void Simulation::destroy()
 
      if ( rand!=nullptr ) delete rand;
      if ( potential!=nullptr ) delete potential;
-     if ( meanEscapeTime!=nullptr ) delete meanEscapeTime;
+     //if ( dataFile!=nullptr ) delete meanEscapeTime;
 }
 
 
@@ -44,7 +44,7 @@ void Simulation::init()
 
      //double beta = settings.getWaitingTimesParameter();
 
-     this->meanEscapeTime = new RunningStat();
+     //this->meanEscapeTime = new RunningStat();
 
      //this->reset();
 }
@@ -57,11 +57,11 @@ void Simulation::reset()
      if ( potential!=nullptr ) delete potential;
 
      int potentialType = this->settings->get ( "POTENTIAL_TYPE" );
-     
+
      switch ( potentialType ) {
      case 2:
           //modulated potential
-          this->potential = new ModulatedPotential2D( this->settings->getFrequency());
+          this->potential = new ModulatedPotential2D ( this->settings->getFrequency() );
           break;
      case 1:
      default:
@@ -110,6 +110,10 @@ void Simulation::run ()
 
 
      double timeInState = 0.0;
+     bool fileOkToSave = false;
+     if ( this->dataFile!=nullptr ) {
+          fileOkToSave = this->dataFile->ok();
+     }
 
      while ( t < max_time ) {
 
@@ -151,7 +155,9 @@ void Simulation::run ()
                     // save time spent in state
 
                     //cout << " state changed! time spent in state:" << timeInState << endl;
-                    this->meanEscapeTime->Push ( timeInState );
+                    if ( fileOkToSave ) {
+                         this->dataFile->write ( timeInState );
+                    }
 
                     timeInState = 0.0;
                } else {

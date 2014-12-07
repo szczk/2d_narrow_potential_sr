@@ -32,34 +32,43 @@ int main ( int argc, char **argv )
      Simulation * sim = new Simulation ( &settings );
 
 
-     char buffer[200];
-     sprintf ( buffer,"%s/%s_mean_escape_time.txt", settings.getStoragePath(), settings.getFullOutputFilesPrefix().c_str() );
+     //char buffer[200];
+     //sprintf ( buffer,"%s/%s_mean_escape_time.txt", settings.getStoragePath(), settings.getFullOutputFilesPrefix().c_str() );
 
+     string outputFile = settings.getDatafileName ( settings.getStoragePath() );
+     cout << "saving in  " << outputFile << endl;
 
-     ofstream output ( buffer );
-     output << "#alpha\tmean_residence_time\tnoise_intensity\n";
+     Datafile * datafile = Datafile::create ( outputFile.c_str() );
 
+     //ofstream output ( buffer );
+     //output << "#alpha\tmean_residence_time\tnoise_intensity\n";
+
+     sim->setDatafile(datafile);
      
      for ( int i =0; i < num ; i++ ) {
+       
           if ( i%tenPerc==0 ) {
                cout << i<<"/"<<num<<endl;
           }
+          
           sim->run ( );
      }
 
-     RunningStat * meanEscape = sim->getMeanEscapeTime();
-     double meanEscapeTime = meanEscape->Mean();
-     int count = meanEscape->NumDataValues();
-     meanEscape->Clear();
+//      RunningStat * meanEscape = sim->getMeanEscapeTime();
+//      double meanEscapeTime = meanEscape->Mean();
+//      int count = meanEscape->NumDataValues();
+//      meanEscape->Clear();
+//      
+//      double noise_d = settings.getNoiseIntensity();
+
+     //output << alpha << "\t" << meanEscapeTime << "\t" << noise_d << "\n" << flush;
+
+
+
+     //output.close();
+     datafile->close();
+     delete datafile;
      
-     double noise_d = settings.getNoiseIntensity();
-
-     output << alpha << "\t" << meanEscapeTime << "\t" << noise_d << "\n" << flush;
-
-
-
-     output.close();
-
      delete sim;
 
      sys.finish();

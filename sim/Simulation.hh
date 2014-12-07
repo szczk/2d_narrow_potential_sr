@@ -11,6 +11,8 @@
 // #include <map>
 // #include <gsl/gsl_histogram2d.h>
 
+#include "../tools/Datafile.hh"
+
 using namespace std;
 
 struct  point {
@@ -35,7 +37,11 @@ private:
      Settings * settings;
      Randoms * rand;
      Potential2D * potential;
-     RunningStat * meanEscapeTime;
+     
+     /**
+      * output datafile
+      */
+     Datafile * dataFile;
      
 
      double x0 ;
@@ -94,8 +100,8 @@ public:
           this->verbose = v;
      }
 
-     
-     RunningStat * getMeanEscapeTime()  { return this->meanEscapeTime;}
+     void setDatafile(Datafile *df) { this->dataFile = df;} 
+     Datafile * getDataFile()  { return this->dataFile;}
 
 };
 

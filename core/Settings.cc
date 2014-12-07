@@ -227,7 +227,7 @@ string  Settings::normalizePath ( const char* str )
 
 
 
-string Settings::getDatafileName ( const char* folder, int nt )
+string Settings::getDatafileName ( const char* folder )
 {
 
      char dataFile[200];
@@ -242,15 +242,15 @@ string Settings::getDatafileName ( const char* folder, int nt )
      if ( this->multipleOutputs() ) {
           //cout << " multiple outputs! generating filename #" << this->getMultipleOutputFilenum() <<endl;
           //wielokrotny output, wyjsciowy plik dat musi miec numerek przyslany z zewnatrz
-          sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_%i_tr%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, getMultipleOutputFilenum(),nt );
+          sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, getMultipleOutputFilenum() );
      } else {
           // wszystko do jednego pliku
-          sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_tr%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, nt );
+          sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType );
      }
      return string ( dataFile );
 }
 
-string Settings::getMultiDatafileName ( const char* folder, int multiOutputFilenum, int nt )
+string Settings::getMultiDatafileName ( const char* folder, int multiOutputFilenum )
 {
 
      char dataFile[200];
@@ -263,7 +263,7 @@ string Settings::getMultiDatafileName ( const char* folder, int multiOutputFilen
 
      //cout << " multiple outputs! generating filename #" << this->getMultipleOutputFilenum() <<endl;
 
-     sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_%i_tr%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, multiOutputFilenum,nt );
+     sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, multiOutputFilenum );
 
      return string ( dataFile );
 }
