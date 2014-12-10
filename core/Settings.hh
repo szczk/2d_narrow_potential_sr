@@ -278,8 +278,8 @@ public:
 
 
 
-     string getDatafileName ( const char *  );
-     string getMultiDatafileName ( const char* folder, int multiOutputFilenum );
+     string getDatafileName ( const char *, int nt  );
+     string getMultiDatafileName ( const char* folder, int multiOutputFilenum ,int nt);
 };
 
 

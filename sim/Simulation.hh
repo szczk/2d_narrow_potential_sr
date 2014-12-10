@@ -37,12 +37,7 @@ private:
      Settings * settings;
      Randoms * rand;
      Potential2D * potential;
-     
-     /**
-      * output datafile
-      */
-     Datafile * dataFile;
-     
+          
 
      double x0 ;
      double y0 ;
@@ -93,15 +88,20 @@ public:
      ~Simulation();
 
 
-     void run ( );
+     /**
+      * Simulate trajectory and store it in datafile.
+      * Remember that trajectory is in 2D, so
+      * datafile will contain pairs of [x(t),y(t)]
+      * 
+      */
+     void run ( Datafile *df );
 
 
      void setVerbose ( bool v ) {
           this->verbose = v;
      }
 
-     void setDatafile(Datafile *df) { this->dataFile = df;} 
-     Datafile * getDataFile()  { return this->dataFile;}
+     
 
 };
 

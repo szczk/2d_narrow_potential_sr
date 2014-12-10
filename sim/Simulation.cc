@@ -10,7 +10,7 @@ inline ostream& operator<< ( ostream &out, point &cPoint )
 
 
 
-Simulation::Simulation ( Settings * set )  : rand ( nullptr ), potential ( nullptr ), dataFile ( nullptr ), x0 ( 0.0 ), y0 ( 0.0 ),  lastX ( 0.0 ), measureTime ( false ), verbose ( false )
+Simulation::Simulation ( Settings * set )  : rand ( nullptr ), potential ( nullptr ),  x0 ( 0.0 ), y0 ( 0.0 ),  lastX ( 0.0 ), measureTime ( false ), verbose ( false )
 {
 
      this->settings = set;
@@ -32,7 +32,6 @@ void Simulation::destroy()
 
      if ( rand!=nullptr ) delete rand;
      if ( potential!=nullptr ) delete potential;
-     //if ( dataFile!=nullptr ) delete meanEscapeTime;
 }
 
 
@@ -80,7 +79,7 @@ void Simulation::reset()
 
 
 
-void Simulation::run ()
+void Simulation::run ( Datafile *df )
 {
 
      this->reset();
@@ -109,15 +108,20 @@ void Simulation::run ()
      double max_time = this->settings->get ( "max_time" );
 
 
-     double timeInState = 0.0;
-     bool fileOkToSave = false;
-     if ( this->dataFile!=nullptr ) {
-          fileOkToSave = this->dataFile->ok();
-     }
+//      double timeInState = 0.0;
+//      bool fileOkToSave = false;
+//      if ( this->dataFile!=nullptr ) {
+//           fileOkToSave = this->dataFile->ok();
+//      }
 
-     while ( t < max_time ) {
+     while ( t <= max_time ) {
 
 
+          //if datafile is null here, everything will fail miserably
+          df->write(current_point.x);
+          df->write(current_point.y);
+         
+         
 //        cout << "t="<<t<<endl;
           double * v ;
 
@@ -145,29 +149,29 @@ void Simulation::run ()
           t+= dt;
 
           //do not measure until first state change
-          if ( !measureTime && stateChanged ( current_point.x ) ) {
-               measureTime = true;
-               //cout << " state changed first time! t = " << t << endl;
-          }
+//           if ( !measureTime && stateChanged ( current_point.x ) ) {
+//                measureTime = true;
+//                //cout << " state changed first time! t = " << t << endl;
+//           }
+// 
+//           if ( measureTime ) {
+//                if ( stateChanged ( current_point.x ) ) {
+//                     // save time spent in state
+// 
+//                     //cout << " state changed! time spent in state:" << timeInState << endl;
+//                     if ( fileOkToSave ) {
+//                          this->dataFile->write ( timeInState );
+//                     }
+// 
+//                     timeInState = 0.0;
+//                } else {
+//                     timeInState+= dt;
+//                }
+//           }
 
-          if ( measureTime ) {
-               if ( stateChanged ( current_point.x ) ) {
-                    // save time spent in state
-
-                    //cout << " state changed! time spent in state:" << timeInState << endl;
-                    if ( fileOkToSave ) {
-                         this->dataFile->write ( timeInState );
-                    }
-
-                    timeInState = 0.0;
-               } else {
-                    timeInState+= dt;
-               }
-          }
 
 
-
-          this->lastX = current_point.x;
+//           this->lastX = current_point.x;
 
      }
 

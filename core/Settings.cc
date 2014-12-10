@@ -227,13 +227,10 @@ string  Settings::normalizePath ( const char* str )
 
 
 
-string Settings::getDatafileName ( const char* folder )
+string Settings::getDatafileName ( const char* folder, int nt  )
 {
-
      char dataFile[200];
-
      double alpha = getJumpsParameter();
-     double beta = getWaitingTimesParameter();
      double noise = getNoiseIntensity();
      int noiseType = ( int ) get ( "NOISE_TYPE" );
      int potentialType = ( int ) get ( "POTENTIAL_TYPE" );
@@ -242,28 +239,25 @@ string Settings::getDatafileName ( const char* folder )
      if ( this->multipleOutputs() ) {
           //cout << " multiple outputs! generating filename #" << this->getMultipleOutputFilenum() <<endl;
           //wielokrotny output, wyjsciowy plik dat musi miec numerek przyslany z zewnatrz
-          sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, getMultipleOutputFilenum() );
+          sprintf ( dataFile,"%s/%s_a%1.2f_s%1.2f_nt%i_pt%i_%i_tr%i.dat",folder, getFilesPrefix(),alpha , noise , noiseType, potentialType, getMultipleOutputFilenum(), nt  );
      } else {
           // wszystko do jednego pliku
-          sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType );
+          sprintf ( dataFile,"%s/%s_a%1.2f_s%1.2f_nt%i_pt%i_tr%i.dat",folder, getFilesPrefix(),alpha , noise , noiseType, potentialType , nt);
      }
      return string ( dataFile );
 }
 
-string Settings::getMultiDatafileName ( const char* folder, int multiOutputFilenum )
+string Settings::getMultiDatafileName ( const char* folder, int multiOutputFilenum, int nt  )
 {
-
      char dataFile[200];
-
      double alpha = getJumpsParameter();
-     double beta = getWaitingTimesParameter();
      double noise = getNoiseIntensity();
      int noiseType = ( int ) get ( "NOISE_TYPE" );
      int potentialType = ( int ) get ( "POTENTIAL_TYPE" );
 
      //cout << " multiple outputs! generating filename #" << this->getMultipleOutputFilenum() <<endl;
 
-     sprintf ( dataFile,"%s/%s_a%1.2f_b%1.2f_s%1.2f_nt%i_pt%i_%i.dat",folder, getFilesPrefix(),alpha ,beta , noise , noiseType, potentialType, multiOutputFilenum );
+     sprintf ( dataFile,"%s/%s_a%1.2f_s%1.2f_nt%i_pt%i_%i_tr%i.dat",folder, getFilesPrefix(),alpha , noise , noiseType, potentialType, multiOutputFilenum ,nt );
 
      return string ( dataFile );
 }

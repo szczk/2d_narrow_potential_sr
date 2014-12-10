@@ -53,16 +53,18 @@ for nt in 1
       do
        for sigma in $(seq -w 0.1 0.1 4.0)
          do
-	  echo "alpha = $alpha, sigma = $sigma, nt = $nt, pt = $pt"
-	  file="a_"$alpha"_s_"$sigma"_nt_"$nt"_pt_"$pt"_SR.pbs"
-
-		  if [ ${USER} = "ufszczep" ];
-		  then
-		    cat pbs_template.tpl | sed -e "s/\${tmp}/$tmpdir/g" -e "s/\${storage}/$storagedir/g" -e "s/\${alpha}/$alpha/g" -e "s/\${sigma}/$sigma/g" -e "s/\${nt}/$nt/g" -e "s/\${pt}/$pt/g" > $file
-		    qsub -f $file >> jobs_ids.txt
-		  else
-		    ./generator.x --alpha $alpha --noise $sigma --storage "$storagedir" --tmp "$tmpdir" --pt $pt --nt $nt
-		  fi 
+          for num in $(seq 1 10)
+           do
+              echo "alpha = $alpha, sigma = $sigma, nt = $nt, pt = $pt n = $num"
+              file="a_"$alpha"_s_"$sigma"_nt_"$nt"_pt_"$pt"_"$num".pbs"
+                if [ ${USER} = "ufszczep" ];
+                then
+                    cat pbs_template.tpl | sed -e "s/\${tmp}/$tmpdir/g" -e "s/\${storage}/$storagedir/g" -e "s/\${alpha}/$alpha/g" -e "s/\${sigma}/$sigma/g" -e "s/\${nt}/$nt/g" -e "s/\${pt}/$pt/g" -e "s/\${num}/$num/g" > $file
+                    qsub -f $file >> jobs_ids.txt
+                else
+                    ./generator.x --alpha $alpha --noise $sigma --storage "$storagedir" --tmp "$tmpdir" --pt $pt --nt $nt --data_file_num $num
+                fi 
+           done
          done
        done 
     done
