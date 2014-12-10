@@ -1,6 +1,7 @@
 #ifndef __RUNNING_STAT_HH__
 #define __RUNNING_STAT_HH__
 
+#include <cmath>
 
 using namespace std;
 

@@ -4,7 +4,7 @@
 #include <cmath>
 #include <sys/stat.h>
 #include "tools/Datafile.hh"
-
+#include "analysis/Analysis.hh"
 
 int main ( int argc , char ** argv )
 {
@@ -22,7 +22,8 @@ int main ( int argc , char ** argv )
      settings.printParameters();
 
 
-     
+         // analysis
+     Analysis * analysis = new Analysis ( &settings );
 
      double ntrajectories = settings.getNtrajectories();
      int tenPerc = ( ntrajectories>10 ) ? ( int ) ( ntrajectories*0.1 ) : 1;
@@ -44,7 +45,7 @@ int main ( int argc , char ** argv )
                     if ( datafile->ok() ) {
 
                          cout << "ok"<<endl;
-                         //analysis->fillFromFile ( datafile );
+                         analysis->fillFromFile ( datafile );
 
 //                          int count = datafile->getCount();
 //
@@ -72,7 +73,7 @@ int main ( int argc , char ** argv )
                cout << "opening " << outputFile << endl;
                Datafile * datafile = Datafile::open ( outputFile.c_str() );
                if ( datafile->ok() ) {
-                    //analysis->fillFromFile ( datafile );
+                    analysis->fillFromFile ( datafile );
                } else {
                     delete datafile;
                }
@@ -80,8 +81,12 @@ int main ( int argc , char ** argv )
      }
      
      
-     
+     analysis->calculate();
 
+     analysis->save();
+
+     analysis->close();
+     delete analysis;
      
 
      sys.finish();
