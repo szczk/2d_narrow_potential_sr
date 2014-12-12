@@ -2,7 +2,7 @@
 
 
 
-Analysis::Analysis ( Settings*s ) : settings ( s ),  calculated ( false )
+Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs(nullptr), meanYs(nullptr),  calculated ( false )
 {
 
 
@@ -96,7 +96,9 @@ void Analysis::fillFromFile ( Datafile* f )
 
 void Analysis::fill ( double t, double x, double y )
 {
-
+   cout << "filling " <<endl;
+    
+    RunningStat * meanX  = this->get(t, this->meanXs);
 //      auto amr = this->meanR->find ( t );
 //      auto amg = this->marginalDistributions->find ( t );
 // 
@@ -179,6 +181,8 @@ void Analysis::initAnalysis()
 //      this->meanR = new map<double, MeanRsquared*>();
 //      this->marginalDistributions = new map<double, MarginalDistributions*>();
      
+        init(this->meanXs);
+        init(this->meanYs);
      
      
      
@@ -478,3 +482,53 @@ void Analysis::deleteAnalysis()
 //      cout << "set arrow from "<<x[0]<<","<< (c1 * x[0] + c0)<< " to "<< x[fitCount-2]<<","<< (x[fitCount-2]* c1 + c0) <<" nohead lt 1 lw 3"<<endl;
 // 
 // }
+
+template <typename T> T* Analysis:: get(double t, map< double,T* > * m ) {
+     if( m!=nullptr) {
+        cout << "t = "<< t <<  ",get " << typeid(*m).name() << endl;  
+        auto p = m->find ( t );
+        auto pEnd = m->end();
+        T * mr ;
+        cout << "t = "<< t <<  ",get " << typeid(*mr).name() << endl;
+        if ( p==pEnd ) {
+            cout << " new obj" << endl;
+            mr = new T();
+            m->insert ( std::make_pair ( t, mr ) );
+        } else {
+            mr = p->second;
+            cout << "retrieve"<<endl;
+        }
+        return mr; 
+            
+        }
+    else {
+     cout << "null map passed!"<<endl;   
+     return nullptr;
+    }
+     
+}
+
+template <typename T> void Analysis::init( T * map) {
+    
+      if ( map!=nullptr ) {
+          cout << " " << typeid(T).name() << " not null!" << endl;
+      }
+      else {
+           cout << "initializing  " << typeid(T).name()  << endl;
+           map = new T();
+      }
+}
+
+template <typename T> void Analysis::deleteMap( map<double, T*> * map) {
+    
+     if ( map!=nullptr ) {
+          cout << "deleting " << typeid(*map).name() << endl;
+          for ( auto it = map->begin(); it!= map->end(); ++it ) {
+               T * elem = ( it->second );
+               delete elem;
+          }
+          delete map;
+     }
+     
+     
+}

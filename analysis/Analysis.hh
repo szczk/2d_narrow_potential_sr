@@ -6,6 +6,8 @@
 
 #include "../core/Settings.hh"
 #include "../tools/Datafile.hh"
+
+#include <typeinfo>
 // #include "../tools/TrajectoriesDatafilesIterator.hh"
 // #include "../tools/Utility.hh"
 
@@ -40,8 +42,8 @@ private:
 //      TrajectoriesDatafilesIterator * trajIterator;
 
      // analysis modules mapped by time
-      map<double, RunningStat *> *meanX;
-      map<double, RunningStat *> *meanY;
+      map<double, RunningStat *> *meanXs;
+      map<double, RunningStat *> *meanYs;
       
 //      map<double, MarginalDistributions *> *marginalDistributions;
      //vector<MarginalDistributions*> * marginalDistributions;
@@ -118,6 +120,12 @@ public:
       * close everything and delete objects
       */
      void close();
+     
+     template <typename T> void init( T * );
+     
+     template <typename T>  T* get(double t, map<double,T*>* );
+     
+     template <typename T> void deleteMap( map<double, T*> * map);
 };
 
 #endif
