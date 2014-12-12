@@ -42,8 +42,8 @@ private:
 //      TrajectoriesDatafilesIterator * trajIterator;
 
      // analysis modules mapped by time
-      map<double, RunningStat *> *meanXs;
-      map<double, RunningStat *> *meanYs;
+      map<double, RunningStat *> * meanXs;
+      map<double, RunningStat *> * meanYs;
       
 //      map<double, MarginalDistributions *> *marginalDistributions;
      //vector<MarginalDistributions*> * marginalDistributions;
@@ -121,7 +121,7 @@ public:
       */
      void close();
      
-     template <typename T> void init( T * );
+     template <typename T> T*  init( T * );
      
      template <typename T>  T* get(double t, map<double,T*>* );
      

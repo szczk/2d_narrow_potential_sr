@@ -76,9 +76,11 @@ void Analysis::fillFromFile ( Datafile* f )
      if ( f->ok() ) {
 
           // iterate over time
-          double maxT = settings->get ( "maxT" );
+          double maxT = settings->get ( "max_time" );
           double dt = settings->get ( "dt" );
           double starttime = settings->get ( "starttime" );
+	  
+// 	  cout << "maxt : " << maxT << "\t dt = " << dt << "\t start time = " << starttime << endl;
           for ( double t = starttime; t <= maxT;  t+=dt ) {
 //           cout << " t = " << t << endl;
                double x = f->read();
@@ -96,7 +98,7 @@ void Analysis::fillFromFile ( Datafile* f )
 
 void Analysis::fill ( double t, double x, double y )
 {
-   cout << "filling " <<endl;
+//    cout << "filling " <<endl;
     
     RunningStat * meanX  = this->get(t, this->meanXs);
 //      auto amr = this->meanR->find ( t );
@@ -181,10 +183,12 @@ void Analysis::initAnalysis()
 //      this->meanR = new map<double, MeanRsquared*>();
 //      this->marginalDistributions = new map<double, MarginalDistributions*>();
      
-        init(this->meanXs);
-        init(this->meanYs);
+        this->meanXs = init(this->meanXs);
+        this->meanYs = init(this->meanYs);
      
-     
+       if( this->meanXs==nullptr) {
+	 cout << "null again!"<<endl;
+       } 
      
 //      histogramProducers = new map<double, HistogramsProducer *>(); ;
 //      edfProducers = new map<double, EDFProducer *>();
@@ -485,18 +489,17 @@ void Analysis::deleteAnalysis()
 
 template <typename T> T* Analysis:: get(double t, map< double,T* > * m ) {
      if( m!=nullptr) {
-        cout << "t = "<< t <<  ",get " << typeid(*m).name() << endl;  
         auto p = m->find ( t );
         auto pEnd = m->end();
         T * mr ;
-        cout << "t = "<< t <<  ",get " << typeid(*mr).name() << endl;
+//         cout << "t = "<< t <<  ",get " << typeid(*mr).name() << endl;
         if ( p==pEnd ) {
-            cout << " new obj" << endl;
+//             cout << " new obj" << endl;
             mr = new T();
             m->insert ( std::make_pair ( t, mr ) );
         } else {
             mr = p->second;
-            cout << "retrieve"<<endl;
+//             cout << "retrieve"<<endl;
         }
         return mr; 
             
@@ -508,15 +511,18 @@ template <typename T> T* Analysis:: get(double t, map< double,T* > * m ) {
      
 }
 
-template <typename T> void Analysis::init( T * map) {
+template <typename T> T*  Analysis::init( T * map) {
     
       if ( map!=nullptr ) {
           cout << " " << typeid(T).name() << " not null!" << endl;
+	  return map;
       }
       else {
            cout << "initializing  " << typeid(T).name()  << endl;
-           map = new T();
+           return new T();
       }
+      
+      
 }
 
 template <typename T> void Analysis::deleteMap( map<double, T*> * map) {

@@ -62,7 +62,7 @@ void Datafile::openExisting(const char* filename)
         this->okToRead =  this->readHeader();
     }
     else {
-     cerr << "unable to open file '" << filename << "'\n"; 
+     cout  << "unable to open file '" << filename << "'\n"; 
     }
 }
 
@@ -121,7 +121,7 @@ bool Datafile::readHeader()
 //     cout << "header: '" << head[0]<< head[1]<<head[2]<<head[3]<<"'... ";
 
 
-    if(head[0]=='D' && head[0]=='D'  && head[0]=='D'  && head[0]=='D'  )
+    if(head[0]=='D' && head[1]=='A'  && head[2]=='T'  && head[3]=='8'  )
     {
 // 	cout << " ok.\n";
         return true;
