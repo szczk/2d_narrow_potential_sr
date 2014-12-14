@@ -1,10 +1,10 @@
-ntrajectories = 1000
+ntrajectories = 100
 
 #jumps parameter (superdiffusion)
-alpha = 2.0
+alpha = 1.9
 
 starttime = 0.0
-max_time = 4.0
+max_time = 8.0
 
 
 # time step
@@ -39,6 +39,9 @@ FREQ_Q = 1.0
 
 
 
+
+#save every
+SAVE_EVERY = 10
 
 ##########################################
 #not used

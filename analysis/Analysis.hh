@@ -14,7 +14,7 @@
 // #include "MeanRsquared.hh"
 // #include "MarginalDistributions.hh"
 
- #include "RunningStat.hh"
+#include "RunningStat.hh"
 
 
 //delete when not needed
@@ -42,35 +42,31 @@ private:
 //      TrajectoriesDatafilesIterator * trajIterator;
 
      // analysis modules mapped by time
-      map<double, RunningStat *> * meanXs;
-      map<double, RunningStat *> * meanYs;
-      
-//      map<double, MarginalDistributions *> *marginalDistributions;
-     //vector<MarginalDistributions*> * marginalDistributions;
+     map<double, RunningStat *> * meanXs;
+     map<double, RunningStat *> * meanYs;
 
 
+     // counters of walker in left/right potential minima
+     map<double, int*> * inLeftCounter;
+     map<double, int*> * inRightCounter;
      
-     
+
+
 //      map<double, HistogramsProducer *> *histogramProducers ;
 //      map<double, EDFProducer *>  *edfProducers ;
 
 
-     
+
 
      void initAnalysis();
      void deleteAnalysis();
 
-
+     
      bool calculated;
-
-//      void checkDatafiles();
-
-
-//      void saveMeanRTestResults();
-     
-     
-//      void saveKolmogorovTestResults ( double deltaT );
-
+     //save x(t), var(x)(t) y(t) var(y)(t)
+     void saveMean ( std::map< double, RunningStat* >* meanPos, const char * variable );
+     // save p(left)(t) p(right)(t);
+     void savePositions();
 
 public:
      Analysis ( Settings * );
@@ -120,12 +116,12 @@ public:
       * close everything and delete objects
       */
      void close();
-     
-     template <typename T> T*  init( T * );
-     
-     template <typename T>  T* get(double t, map<double,T*>* );
-     
-     template <typename T> void deleteMap( map<double, T*> * map);
+
+     template <typename T> T*  init ( T * );
+
+     template <typename T>  T* get ( double t, map<double,T*>* );
+
+     template <typename T> void deleteMap ( map<double, T*> * map );
 };
 
 #endif

@@ -81,6 +81,9 @@ void Settings::readCommandLineParameters ( int argc, char** argv )
                this->setMultipleOutputFilenum ( atoi ( argv[i+1] ) );
           }
 
+          if ( strcmp ( "--save-every",argv[i] ) == 0  && ( i+1 ) < argc ) {
+               this->set ( "SAVE_EVERY", atoi ( argv[i+1] ) );
+          }
 
 
      }
