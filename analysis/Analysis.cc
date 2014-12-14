@@ -2,7 +2,7 @@
 
 
 
-Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs ( nullptr ), meanYs ( nullptr ), inLeftCounter ( nullptr ), inRightCounter ( nullptr ),  calculated ( false )
+Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs ( nullptr ), meanYs ( nullptr ), inLeftCounter ( nullptr ), inRightCounter ( nullptr ), rtd(nullptr),  calculated ( false )
 {
 
 
@@ -11,6 +11,7 @@ Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs ( nullptr ), meanYs (
 
 Analysis:: ~Analysis()
 {
+  cout << "delete Analysis"<<endl;
 }
 
 
@@ -28,8 +29,10 @@ void Analysis::save()
      // do save
      this->saveMean ( this->meanXs, "X" );
      this->saveMean ( this->meanYs, "Y" );
-     
+
      this->savePositions();
+     
+     this->rtd->save();
 
 }
 
@@ -96,42 +99,11 @@ void Analysis::fill ( double t, double x, double y )
           ++ ( *leftCount );
      }
 
-//
-//      if(false) {
-//
-//         auto ahp = this->histogramProducers->find ( t );
-//         auto aedf = this->edfProducers->find ( t );
-//
-//         auto hpEnd = this->histogramProducers->end();
-//         auto edfEnd = this->edfProducers->end();
-//
-//
-//
-//         HistogramsProducer * producer ;
-//         EDFProducer * edfProducer;
-//
-//         if( ahp == hpEnd) {
-//             cout << " new HP for t= " << t <<endl;
-//             producer = new HistogramsProducer ( settings );
-//             producer->setTime ( t );
-//             this->histogramProducers->insert( std::make_pair(t, producer) ) ;
-//         } else {
-//             producer = ahp->second;
-//         }
-//
-//         if( aedf == edfEnd ) {
-//             edfProducer = new EDFProducer ( settings );
-//             edfProducer->setTime ( t );
-//             this->edfProducers->insert( std::make_pair(t,edfProducer));
-//         } else {
-//             edfProducer = aedf->second;
-//         }
-//
-//
-//         producer->fill(x,y);
-//         edfProducer->fill(x,y);
-//
-//      }
+     
+     
+    
+     
+     this->rtd->fill(t, x,y);
 }
 
 
@@ -160,17 +132,24 @@ void Analysis::initAnalysis()
      this->inLeftCounter = init ( this->inLeftCounter );
      this->inRightCounter = init ( this->inRightCounter );
 
+
+     this->rtd = new ResidenceTimeDistribution(this->settings);
+
 }
 
 void Analysis::deleteAnalysis()
 {
      cout << "deleting " << endl;
 
-     // this->deleteMap(this->meanXs);
-     //this->deleteMap(this->meanYs);
+     this->deleteMap(this->meanXs);
+     this->deleteMap(this->meanYs);
 
-     //delete this->inLeftCounter;
-     //delete this->inRightCounter;
+     delete this->inLeftCounter;
+     delete this->inRightCounter;
+     
+     delete this->rtd;
+     
+     
 
      cout << "all deleted"<<endl;
 }
@@ -206,7 +185,7 @@ void Analysis::saveMean ( std::map< double, RunningStat* >* meanPos, const char 
      // plot mean
      meanRplt << "reset\n";
      meanRplt << "set title ' <"<< variable << ">  {/Symbol a} = " << this->settings->getJumpsParameter();
-     meanRplt << " {/Symbol b} = " << this->settings->getWaitingTimesParameter();
+     meanRplt << " D = " << this->settings->getNoiseIntensity();
      meanRplt << "'\n";
 
      meanRplt << "set terminal post eps size 12,7 enhanced color font 'Helvetica,35' linewidth 2;\n";
@@ -307,7 +286,7 @@ void Analysis::savePositions()
      // plot mean
      meanRplt << "reset\n";
      meanRplt << "set title ' p(left) p(right)  {/Symbol a} = " << this->settings->getJumpsParameter();
-     meanRplt << " {/Symbol b} = " << this->settings->getWaitingTimesParameter();
+     meanRplt << " D = " << this->settings->getNoiseIntensity();
      meanRplt << "'\n";
 
      meanRplt << "set terminal post eps size 12,7 enhanced color font 'Helvetica,35' linewidth 2;\n";
@@ -342,13 +321,13 @@ void Analysis::savePositions()
           return;
      }
 
-     int totalParticlesLeft = *(this->inLeftCounter->begin()->second);
-     int totalParticlesRight = *(this->inRightCounter->begin()->second);
+     int totalParticlesLeft = * ( this->inLeftCounter->begin()->second );
+     int totalParticlesRight = * ( this->inRightCounter->begin()->second );
      int totalParticles = totalParticlesLeft + totalParticlesRight;
      int count = this->settings->getNtrajectories();
-     
+
      cout << "counts: from settings: " << count << " from map: " << totalParticles << endl;
-     
+
      auto itRight = inRightCounter->begin();
      for ( auto itLeft = inLeftCounter->begin(); itLeft!= inLeftCounter->end(); ++itLeft, ++itRight ) {
 
@@ -358,13 +337,13 @@ void Analysis::savePositions()
           saveEvery = se;
 
           double t = itLeft->first;
-          int leftCount = *( itLeft->second );
-	  int rightCount = *( itRight->second );
+          int leftCount = * ( itLeft->second );
+          int rightCount = * ( itRight->second );
 
-          double p_left = ((double) leftCount/((double) totalParticles));
-          double p_right = ((double) rightCount/((double) totalParticles));
+          double p_left = ( ( double ) leftCount/ ( ( double ) totalParticles ) );
+          double p_right = ( ( double ) rightCount/ ( ( double ) totalParticles ) );
 
-          output << t << "\t" << p_left << "\t" << p_right << "\t" << (1.0 - p_left) << "\n";
+          output << t << "\t" << p_left << "\t" << p_right << "\t" << ( 1.0 - p_left ) << "\n";
      }
 
      // output.flush();

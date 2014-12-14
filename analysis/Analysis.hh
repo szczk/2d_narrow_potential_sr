@@ -15,7 +15,7 @@
 // #include "MarginalDistributions.hh"
 
 #include "RunningStat.hh"
-
+#include "ResidenceTimeDistribution.hh"
 
 //delete when not needed
 // #include "HistogramsProducer.hh"
@@ -49,19 +49,16 @@ private:
      // counters of walker in left/right potential minima
      map<double, int*> * inLeftCounter;
      map<double, int*> * inRightCounter;
-     
 
 
-//      map<double, HistogramsProducer *> *histogramProducers ;
-//      map<double, EDFProducer *>  *edfProducers ;
 
-
+     ResidenceTimeDistribution * rtd;
 
 
      void initAnalysis();
      void deleteAnalysis();
 
-     
+
      bool calculated;
      //save x(t), var(x)(t) y(t) var(y)(t)
      void saveMean ( std::map< double, RunningStat* >* meanPos, const char * variable );
