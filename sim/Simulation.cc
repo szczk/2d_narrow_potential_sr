@@ -107,9 +107,6 @@ void Simulation::run ( Datafile *df )
 
      double max_time = this->settings->get ( "max_time" );
 
-
-     int se = this->settings->get ( "GENERATOR_SAVE_EVERY" );
-     int saveEvery = 0;
      
 //      double timeInState = 0.0;
 //      bool fileOkToSave = false;
@@ -119,14 +116,9 @@ void Simulation::run ( Datafile *df )
 
      while ( t <= max_time ) {
 
-         
-          if ( ( saveEvery-- ) <=0 ) {
-           df->write(current_point.x);
-           df->write(current_point.y);
-           saveEvery = se;
-           
-          }
 
+          df->write(current_point.x);
+          df->write(current_point.y);
          
          
 //        cout << "t="<<t<<endl;
