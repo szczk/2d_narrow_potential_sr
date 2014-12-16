@@ -309,7 +309,7 @@ void Analysis::savePositions()
 //      int fitCount = meanRs > 50 ? 50 : meanRs;
 //      double x[fitCount], y[fitCount];
 
-     int se = this->settings->get ( "SAVE_EVERY" );
+     int se = this->settings->get ( "ANALYSIS_SAVE_EVERY" );
      int saveEvery = se;
 
 

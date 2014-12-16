@@ -2,7 +2,17 @@
 
 ResidenceTimeDistribution::ResidenceTimeDistribution(Settings * s) : settings(s), p_left ( nullptr ), p_right ( nullptr ), p_total ( nullptr )
 {
-     this->init();
+    
+   nBins = 100;
+   tMin = 0.0;
+   tMax = 1.0;
+  
+  // 
+   statesBorderX = 0.0;
+   residenceTimeStart = 0.0;
+   lastPosition = 0.0;
+  
+   this->init();
 }
 
 

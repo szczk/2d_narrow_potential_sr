@@ -41,7 +41,8 @@ FREQ_Q = 1.0
 
 
 #save every
-SAVE_EVERY = 10
+GENERATOR_SAVE_EVERY = 10
+ANALYSIS_SAVE_EVERY = 10
 
 # histogram settings
 RTD_MIN = 0.0
