@@ -1,14 +1,14 @@
-ntrajectories = 100
+ntrajectories = 1000
 
 #jumps parameter (superdiffusion)
 alpha = 1.9
 
 starttime = 0.0
-max_time = 8.0
+max_time = 20.0
 
 
 # time step
-dt = 1.0e-5
+dt = 1.0e-4
 
 
 # potential minima at (-1,0) and (1,0)

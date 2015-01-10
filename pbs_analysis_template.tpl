@@ -84,7 +84,7 @@ module add gcc
 module add gsl
 #module add libs/glibc/2.7
 
-./analysis.x --alpha ${alpha} --noise ${sigma} --data "$SCRATCH/2d_NP/"  --storage "$SCRATCH/results/" --tmp "$SCRATCH" --pt ${pt} --nt ${nt} --n 1000 --data_file_num 100  > $logs/SR_2d_a${alpha}_s${sigma}_nt_${nt}_pt${pt}_n${num}_analysis.log
+./analysis.x --alpha ${alpha} --noise ${sigma} --data "$SCRATCH/2d_NP_pt${pt}/"  --storage "$STORAGE/results/" --tmp "$SCRATCH" --pt ${pt} --nt ${nt} --data_file_num ${num}  > $logs/SR_2d_a${alpha}_s${sigma}_nt_${nt}_pt${pt}_n${num}_analysis.log
 
 
 
