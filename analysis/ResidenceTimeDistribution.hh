@@ -29,14 +29,14 @@ private:
   gsl_histogram * p_right;
   gsl_histogram * p_total;
   
-  int nBins = 100;
-  double tMin = 0.0;
-  double tMax = 1.0;
+  int nBins;
+  double tMin;
+  double tMax;
   
   // 
-  double statesBorderX = 0.0;
-  double residenceTimeStart = 0.0;
-  double lastPosition = 0.0;
+  double statesBorderX;
+  double residenceTimeStart ;
+  double lastPosition ;
   
   
   void init();
