@@ -43,7 +43,7 @@ echo "\n"
 export LC_NUMERIC="en_US.UTF-8"
 
 
-
+num=10
 
 for nt in 1
  do
