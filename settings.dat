@@ -39,6 +39,11 @@ FREQ_Q = 1.0
 
 
 
+#constraints (to keep from escaping to infinity)\
+#limits are as +/- of this values
+VAL_X_LIMIT = 15
+VAL_Y_LIMIT = 10
+
 
 #save every
 GENERATOR_SAVE_EVERY = 10

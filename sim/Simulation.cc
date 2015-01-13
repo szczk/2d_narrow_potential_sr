@@ -108,6 +108,11 @@ void Simulation::run ( Datafile *df )
      double max_time = this->settings->get ( "max_time" );
 
      
+     
+     double x_limit = abs(this->settings->get( "VAL_X_LIMIT"));
+     double y_limit = abs(this->settings->get( "VAL_Y_LIMIT"));
+     
+     
 //      double timeInState = 0.0;
 //      bool fileOkToSave = false;
 //      if ( this->dataFile!=nullptr ) {
@@ -147,6 +152,17 @@ void Simulation::run ( Datafile *df )
           delete[] v;
           t+= dt;
 
+          
+          
+          //constraints
+          if( current_point.x < -x_limit) current_point.x = -x_limit;
+          else if (current_point.x > x_limit) current_point.x = x_limit;
+
+          if( current_point.y < -y_limit) current_point.y = -y_limit;
+          else if (current_point.y > y_limit) current_point.y = y_limit;
+          
+          
+          
           //do not measure until first state change
 //           if ( !measureTime && stateChanged ( current_point.x ) ) {
 //                measureTime = true;
