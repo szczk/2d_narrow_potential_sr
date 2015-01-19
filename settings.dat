@@ -49,6 +49,10 @@ RTD_MIN = 0.0
 RTD_MAX = 1.0
 RTD_NBINS = 100
 
+
+# mean amplitude save from t= 
+AMPLITUDE_SAVE_FROM_T = 10
+
 ##########################################
 #not used
 # npoints: num_of_periods* (2^(length_power) )

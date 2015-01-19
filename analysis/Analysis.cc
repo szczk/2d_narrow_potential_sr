@@ -223,15 +223,22 @@ void Analysis::saveMean ( std::map< double, RunningStat* >* meanPos, const char 
 //      int fitCount = meanRs > 50 ? 50 : meanRs;
 //      double x[fitCount], y[fitCount];
 
-     int se = this->settings->get ( "SAVE_EVERY" );
-     int saveEvery = se;
+//      int se = this->settings->get ( "SAVE_EVERY" );
+//      int saveEvery = se;
+     
 
+     
+     double saveAmplitudeFromT = this->settings->get ("AMPLITUDE_SAVE_FROM_T" );
+
+     double max_mean_val = 0.0;
+     double min_mean_val = 0.0;
+     
      for ( auto it = meanPos->begin(); it!= meanPos->end(); ++it ) {
 
-          if ( ( saveEvery-- ) >0 ) {
-               continue;
-          }
-          saveEvery = se;
+//           if ( ( saveEvery-- ) >0 ) {
+//                continue;
+//           }
+//           saveEvery = se;
 
           double t = it->first;
           RunningStat * mr = ( it->second );
@@ -247,8 +254,20 @@ void Analysis::saveMean ( std::map< double, RunningStat* >* meanPos, const char 
           output << t << "\t" << mean << "\t" << mean_err << "\t" << variance<< "\n";
           //}
 
+	  
+	  if( t > saveAmplitudeFromT ) {
+	    if(mean > max_mean_val) max_mean_val = mean;
+	    if(mean < min_mean_val) min_mean_val = mean;
+	  }
      }
-
+     
+     sprintf ( datafileName,"%s_mean_%s_amplitude.txt", this->settings->getFullOutputFilesPrefix().c_str() , variable );
+     sprintf ( dataFullPath,"%s/%s", this->settings->getStoragePath() , datafileName );
+     ofstream amplOutput ( dataFullPath );
+     amplOutput << "# alpha\tnoise_intensity\tmax(<"<<variable <<"<)-min(<"<<variable<<">)\n";
+     
+     amplOutput << this->settings->getJumpsParameter() << "\t" <<  this->settings->getNoiseIntensity() << "\t" << (max_mean_val - min_mean_val) << endl;
+     amplOutput.close();
      // output.flush();
 
      output.close();
