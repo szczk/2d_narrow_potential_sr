@@ -2,8 +2,8 @@
 
 
 
-TransitionsPerPeriod::TransitionsPerPeriod() {
-  
+TransitionsPerPeriod::TransitionsPerPeriod(Settings * s) {
+  this->settings = s;
   
 }
 

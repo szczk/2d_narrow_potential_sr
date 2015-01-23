@@ -113,6 +113,8 @@ void Simulation::run ( Datafile *df )
      double y_limit = abs(this->settings->get( "VAL_Y_LIMIT"));
      
      
+     double saveTfromTime = this->settings->get( "save_traj_from_time");
+     
 //      double timeInState = 0.0;
 //      bool fileOkToSave = false;
 //      if ( this->dataFile!=nullptr ) {
@@ -121,10 +123,11 @@ void Simulation::run ( Datafile *df )
 
      while ( t <= max_time ) {
 
-
+       // save only if t >= defined time point 
+	  if( t >= saveTfromTime ) {
           df->write(current_point.x);
           df->write(current_point.y);
-         
+	  }
          
 //        cout << "t="<<t<<endl;
           double * v ;

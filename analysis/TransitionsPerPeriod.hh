@@ -2,7 +2,9 @@
 #define __TRANSITIONS_PER_PERIOD__
 
 
+#include "../core/Settings.hh"
 
+using namespace std;
 
 /**
  * calculate probabilities of N transitions per period of modulating force
