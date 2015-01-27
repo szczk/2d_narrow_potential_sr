@@ -59,7 +59,7 @@ void Analysis::fillFromFile ( Datafile* f )
           // iterate over time
           double maxT = settings->get ( "max_time" );
           double dt = settings->get ( "dt" );
-          double starttime = settings->get ( "starttime" );
+          double starttime = settings->get ( "save_traj_from_time" );
 
 // 	  cout << "maxt : " << maxT << "\t dt = " << dt << "\t start time = " << starttime << endl;
           for ( double t = starttime; t <= maxT;  t+=dt ) {
