@@ -84,7 +84,7 @@ module add gcc
 module add gsl
 #module add libs/glibc/2.7
 
-./generator.x --alpha ${alpha} --noise ${sigma} --storage "$SCRATCH/2d_NP_pt2"  --tmp "$SCRATCH" --pt ${pt} --nt ${nt} --data_file_num ${num}  > $logs/SR_2d_a${alpha}_s${sigma}_nt_${nt}_pt${pt}_n${num}.log
+./generator.x --alpha ${alpha} --noise ${sigma} --storage "$SCRATCH/2d_NP_pt${pt}_D"  --tmp "$SCRATCH" --pt ${pt} --nt ${nt} --data_file_num ${num}  > $logs/SR_2d_a${alpha}_s${sigma}_nt_${nt}_pt${pt}_n${num}.log
 
 
 
