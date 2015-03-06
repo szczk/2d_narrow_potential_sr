@@ -17,12 +17,15 @@ class NarrowPotential2D : public Potential2D {
   
   
 private:
-  
+    double param_A;
+  double param_B;
+  double param_C;
+  double param_A0;
   
 public:
   
   
-  NarrowPotential2D();
+  NarrowPotential2D(double,double,double,double);
   ~NarrowPotential2D();
   
   

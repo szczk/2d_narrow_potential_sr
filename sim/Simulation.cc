@@ -56,15 +56,19 @@ void Simulation::reset()
      if ( potential!=nullptr ) delete potential;
 
      int potentialType = this->settings->get ( "POTENTIAL_TYPE" );
-
+     double param_A = this->settings->get("PARAM_A");
+     double param_B = this->settings->get("PARAM_B");
+     double param_C = this->settings->get("PARAM_C");
+     double param_A0 = this->settings->get("PARAM_A0");
+     
      switch ( potentialType ) {
      case 2:
           //modulated potential
-          this->potential = new ModulatedPotential2D ( this->settings->getFrequency() );
+          this->potential = new ModulatedPotential2D ( param_A,param_B, param_C,param_A0, this->settings->getFrequency() );
           break;
      case 1:
      default:
-          this->potential = new NarrowPotential2D ();
+          this->potential = new NarrowPotential2D ( param_A,param_B, param_C,param_A0 );
           break;
      }
 

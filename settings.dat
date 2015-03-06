@@ -4,9 +4,9 @@ ntrajectories = 100
 alpha = 1.9
 
 starttime = 0.0
-max_time = 120.0
+max_time = 10.0
 
-save_traj_from_time = 100.0
+save_traj_from_time = 0.0
 
 # time step
 dt = 1.0e-5
@@ -32,9 +32,15 @@ NOISE_TYPE = 1
 
 
 #potential type
-# 1 = static potential V(x,y)= 1/4x^4-1/2x^2+1/4y^4
-# 2 = modulated potential V(x,y)= 1/4x^4-1/2x^2+1/4y^4 + x*sin( 2*pi * Q t)
+
+# 1 = static potential V(x,y)= B/4x^4 - A/2x^2 + C/4y^4
+# 2 = modulated potential V(x,y)= B/4 x^4 - A/2 x^2 + C/4y^4 + A0 *x*sin( 2*pi * Q t)
 POTENTIAL_TYPE = 2 
+
+PARAM_A = 128
+PARAM_B = 512
+PARAM_C = 512
+PARAM_A0 = 8
 
 FREQ_Q = 1.0
 
@@ -42,8 +48,8 @@ FREQ_Q = 1.0
 
 #constraints (to keep from escaping to infinity)\
 #limits are as +/- of this values
-VAL_X_LIMIT = 15
-VAL_Y_LIMIT = 10
+VAL_X_LIMIT = 25
+VAL_Y_LIMIT = 20
 
 
 #save every
