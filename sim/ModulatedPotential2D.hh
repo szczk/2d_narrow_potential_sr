@@ -43,6 +43,8 @@ public:
   virtual const char * toString() {
           return "V(x,y)= 1/4 x^4 - 1/2 x^2 + 1/4y^4 + x sin(2pi * Q*t)" ;
      }
+     
+  virtual vec getAnalyticValue(double &x, double &y, double &dt);
 
 };
 

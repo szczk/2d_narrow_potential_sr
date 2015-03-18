@@ -38,6 +38,8 @@ public:
   virtual const char * toString() {
           return "V(x,y)= 1/4x^4-1/2x^2+1/4y^4";
      }
+     
+  virtual vec getAnalyticValue(double &x, double &y, double &dt);
 
 };
 

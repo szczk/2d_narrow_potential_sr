@@ -35,6 +35,20 @@ public:
           return this->getValue ( x,y,t );
      }
 
+     /** 
+      * Get analitic values of x(t) and y(t)
+      * 
+      * if x(t) == x(0)
+      * then x(t+dt) == x(dt)
+      * 
+      * value of dt should be used as time, so 
+      * we take x(t) as a starting point and move to t+dt
+      * 
+      * returned values should be used INSTEAD OF (x,y), NOT ADDED to old x,y
+      */
+     
+     virtual vec getAnalyticValue(double &x, double &y, double &dt);
+       
 
      /**
       *

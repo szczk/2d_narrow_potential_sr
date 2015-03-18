@@ -35,4 +35,7 @@ void NarrowPotential2D::reset()
 }
 
 
-
+vec getAnalyticValue(double &x, double &y, double &dt) 
+{
+  throw "implement me!";
+}

@@ -20,7 +20,7 @@ void Randoms:: init()
 {
      this->generator = gsl_rng_alloc ( gsl_rng_mt19937 ); //gsl_rng_ranlux
      //this->reset();
-// gsl_rng_set (generator, time(0) );
+     gsl_rng_set (generator, time(0) );
 
 }
 

@@ -76,6 +76,7 @@ void Simulation::reset()
      this->measureTime = false;
      this->lastX = 0.0;
 
+     this->rand->reset();
 //      cout << this->potential->toString() <<endl;
 
 }
@@ -153,48 +154,44 @@ void Simulation::run ( Datafile *df )
 
 //           cout << "v[0] = " << v[0] << "\tv[1] = " << v[1] <<endl;
 
+	  //cout << " t= " << t <<"\t";
+	  //cout << "x,y = " << current_point.x << ","<<current_point.y<<"\t v[0] = " << v[0] << "\t v[1]=" << v[1] <<"\t"; 
+	  //cout <<" V_x = " << potential.x << " \t V_y = " << potential.y << endl;
+	  
           current_point.x += -potential.x*dt  + v[0]*dL;
           current_point.y += -potential.y*dt  + v[1]*dL;
 
+	  
+	  
+	  
           delete[] v;
           t+= dt;
 
           
-          
+          bool overX = false;
           //constraints
-          if( current_point.x < -x_limit) current_point.x = -x_limit;
-          else if (current_point.x > x_limit) current_point.x = x_limit;
+          if( current_point.x < -x_limit) {
+	    current_point.x = -x_limit;
+	    overX = true; 
+	  }
+          else if (current_point.x > x_limit) { 
+	    current_point.x = x_limit;
+	    overX = true;
+	  }
 
           if( current_point.y < -y_limit) current_point.y = -y_limit;
           else if (current_point.y > y_limit) current_point.y = y_limit;
           
           
-          
-          //do not measure until first state change
-//           if ( !measureTime && stateChanged ( current_point.x ) ) {
-//                measureTime = true;
-//                //cout << " state changed first time! t = " << t << endl;
-//           }
-// 
-//           if ( measureTime ) {
-//                if ( stateChanged ( current_point.x ) ) {
-//                     // save time spent in state
-// 
-//                     //cout << " state changed! time spent in state:" << timeInState << endl;
-//                     if ( fileOkToSave ) {
-//                          this->dataFile->write ( timeInState );
-//                     }
-// 
-//                     timeInState = 0.0;
-//                } else {
-//                     timeInState+= dt;
-//                }
-//           }
-
-
-
-//           this->lastX = current_point.x;
-
+          if(overX) {
+	    
+	    cout << "------------" << endl;
+	    cout << " t= " << t <<"\t";
+	   cout << "over limit!"<<"\t" << "x,y = " << current_point.x << ","<<current_point.y<<"\t v[0] = " << v[0] << "\t v[1]=" << v[1] <<endl; 
+	   cout <<" V_x = " << potential.x << " << \t V_y = " << potential.y << endl;
+	   exit(0);
+	    
+	  }
      }
 
 }

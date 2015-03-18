@@ -34,4 +34,9 @@ void ModulatedPotential2D::reset()
 }
 
 
+vec getAnalyticValue(double &x, double &y, double &dt) 
+{
+  
+  
+}
 
