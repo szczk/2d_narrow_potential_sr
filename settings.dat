@@ -4,9 +4,9 @@ ntrajectories = 100
 alpha = 1.9
 
 starttime = 0.0
-max_time = 70.0
+max_time = 75.0
 
-save_traj_from_time = 75.0
+save_traj_from_time = 70.0
 
 # time step
 dt = 1.0e-3
