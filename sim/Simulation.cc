@@ -76,7 +76,7 @@ void Simulation::reset()
      this->measureTime = false;
      this->lastX = 0.0;
 
-     this->rand->reset();
+//      this->rand->reset();
 //      cout << this->potential->toString() <<endl;
 
 }
@@ -97,7 +97,7 @@ void Simulation::run ( Datafile *df )
      double dL = exp ( log ( dt ) /alpha );
 
      double D = this->settings->getNoiseIntensity();
-     double sigma = exp( log(2.0* D)/alpha );
+     double sigma = D; //exp( log(2.0* D)/alpha );
      
      
      
