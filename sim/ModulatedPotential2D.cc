@@ -39,7 +39,7 @@ vec ModulatedPotential2D::getAnalyticValue ( double &x, double &y, double &dt )
 double ModulatedPotential2D::getXderiv ( double &x, double &y, long double &t )
 {
      // d/dx V(x,y) = B x^3 - A x + A0 sin ( Q t)
-     return param_B *x*x*x - param_A * x + param_A0 * sin ( 2.0 * M_PI* freq_Q * t );
+     return param_B *x*x*x - param_A * x -  param_A0 * sin ( 2.0 * M_PI* freq_Q * t );
 }
 
 double ModulatedPotential2D::getYderiv ( double &x, double &y, long double &t )
