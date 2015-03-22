@@ -96,7 +96,11 @@ void Simulation::run ( Datafile *df )
      double alpha = this->settings->getJumpsParameter();
      double dL = exp ( log ( dt ) /alpha );
 
-     double sigma = this->settings->getNoiseIntensity();
+     double D = this->settings->getNoiseIntensity();
+     double sigma = exp( log(2.0* D)/alpha );
+     
+     
+     
      int noiseType = settings->get ( "NOISE_TYPE" );
 
 
@@ -136,7 +140,7 @@ void Simulation::run ( Datafile *df )
 
           switch ( noiseType ) {
           case 1:
-               v = rand->getAlphaStableVector ( alpha );
+               v = rand->getAlphaStableVector ( alpha);
                break;
           case 2:
           default:

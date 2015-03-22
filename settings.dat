@@ -4,9 +4,9 @@ ntrajectories = 100
 alpha = 1.9
 
 starttime = 0.0
-max_time = 75.0
+max_time = 35.0
 
-save_traj_from_time = 70.0
+save_traj_from_time = 20.0
 
 # time step
 dt = 1.0e-3
@@ -14,15 +14,12 @@ dt = 1.0e-3
 
 # potential minima at (-0.5,0) and (0.5,0)
 # x0
-X0 = 0.5
+X0 = -0.5
 Y0 = 0.0
 
 
-# circle radius 
-radius = 1.0
-
 #noise
-NOISE_D = 0.30
+NOISE_D = 5
 
 # 1 = uniform
 # 2 = discrete
@@ -83,4 +80,7 @@ beta = 1.0
 
 
 
+
+# circle radius 
+radius = 1.0
 
