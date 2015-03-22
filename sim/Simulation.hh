@@ -16,7 +16,7 @@
 using namespace std;
 
 struct  point {
-  
+
      double x;
      double y;
 
@@ -37,16 +37,16 @@ private:
      Settings * settings;
      Randoms * rand;
      Potential2D * potential;
-          
+
 
      double x0 ;
      double y0 ;
 
-     
+
      double lastX; // previous position (x)
      bool measureTime;
      bool verbose;
-     
+
 
      /**
       * Initialize anything that needs to be initialized
@@ -81,7 +81,7 @@ private:
 
 
      
-     bool stateChanged( double & x) ;
+     bool stateChanged ( double & x ) ;
 
 public:
      Simulation ( Settings * );
@@ -92,7 +92,7 @@ public:
       * Simulate trajectory and store it in datafile.
       * Remember that trajectory is in 2D, so
       * datafile will contain pairs of [x(t),y(t)]
-      * 
+      *
       */
      void run ( Datafile *df );
 
@@ -101,7 +101,7 @@ public:
           this->verbose = v;
      }
 
-     
+
 
 };
 

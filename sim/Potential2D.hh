@@ -1,8 +1,8 @@
 #ifndef __POTENTIAL2D__CC__
 #define __POTENTIAL2D__CC__
 
-#include "Randoms.hh"
-#include "Settings.hh"
+#include "../core/Randoms.hh"
+#include "../core/Settings.hh"
 
 using namespace std;
 
@@ -47,7 +47,7 @@ public:
       * returned values should be used INSTEAD OF (x,y), NOT ADDED to old x,y
       */
      
-     virtual vec getAnalyticValue(double &x, double &y, double &dt);
+     virtual vec getAnalyticValue(double &x, double &y, double &dt) = 0;
        
 
      /**
@@ -65,6 +65,12 @@ public:
      }
 
 
+     
+     virtual double getXderiv(double &x, double &y, long double &t) = 0;
+     virtual double getYderiv(double &x, double &y, long double &t) = 0;
+     
+     virtual double getXanalytic(double &x, double &y, double &t) = 0;
+     virtual double getYanalytic(double &x, double &y, double &t) = 0;
 };
 
 

@@ -181,6 +181,30 @@ double* Randoms::getAlphaStableVector ( double alpha , double sigma )
      return v;
 }
 
+double* Randoms::getAlphaStableVector ( double alpha  )
+{
+     if(alpha==2.0) return this->getGaussVector(1.0);
+  
+     double * v = new double[2];
+
+     // to generate alpha-stable random vector
+     double s = exp ( log ( cos ( M_PI*alpha/4.0 ) ) *2.0/alpha );
+
+     //first, generate vector of independent gaussian randoms
+     // then generate 1 alpha stable variable, totaly skewed to right (beta=1)
+     double S = 0.0;
+     do {
+          S = this->getLevyStable ( alpha/2.0 , 1.0, s , 0.0 ) ;
+          //if(S<0.0)   cout << "S="<<S<<endl;
+     } while ( S<0.0 );
+
+     double A = sqrt ( S );
+     v[0] = A * this->getGauss ( 1.0 );
+     v[1] = A * this->getGauss ( 1.0 );
+     return v;
+}
+
+
 
 double* Randoms::getGaussVector ( double sigma )
 {

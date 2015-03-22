@@ -40,7 +40,12 @@ public:
      }
      
   virtual vec getAnalyticValue(double &x, double &y, double &dt);
+  
+  virtual double getXderiv(double &x, double &y, long double &t);
+  virtual double getYderiv(double &x, double &y, long double &t);
 
+  virtual double getXanalytic(double &x, double &y, double &t);
+  virtual double getYanalytic(double &x, double &y, double &t);
 };
 
 #endif

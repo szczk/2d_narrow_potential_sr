@@ -78,7 +78,13 @@ public:
       */
      double * getAlphaStableVector ( double alpha, double sigma );
 
-
+     /**
+      * Returns a alpha stable random 2D vector
+      * REMEMBER TO MANUALY REMOVE THE RETURNED ARRAY
+      */
+     double * getAlphaStableVector ( double alpha );
+     
+     
      // 2d symmetric gaussian distribution
      //REMEMBER TO MANUALY REMOVE THE RETURNED ARRAY
      double * getGaussVector ( double sigma );

@@ -4,17 +4,17 @@ ntrajectories = 1
 alpha = 1.9
 
 starttime = 0.0
-max_time = 80.0
+max_time = 75.0
 
-save_traj_from_time = 0.0
+save_traj_from_time = 70.0
 
 # time step
-dt = 1.0e-5
+dt = 1.0e-4
 
 
-# potential minima at (-1,0) and (1,0)
-# x0sa
-X0 = 1.0
+# potential minima at (-0.5,0) and (0.5,0)
+# x0
+X0 = 0.5
 Y0 = 0.0
 
 
@@ -22,7 +22,7 @@ Y0 = 0.0
 radius = 1.0
 
 #noise
-NOISE_D = 1.0
+NOISE_D = 3.0
 
 # 1 = uniform
 # 2 = discrete
@@ -34,7 +34,7 @@ NOISE_TYPE = 1
 #potential type
 
 # 1 = static potential V(x,y)= B/4x^4 - A/2x^2 + C/4y^4
-# 2 = modulated potential V(x,y)= B/4 x^4 - A/2 x^2 + C/4 y^4 - A0 *x*sin( 2*pi * Q t)
+# 2 = modulated potential V(x,y)= B/4 x^4 - A/2 x^2 + C/4 y^4 + A0 *x*sin( 2*pi * Q t)
 POTENTIAL_TYPE = 2 
 
 PARAM_A = 128
@@ -45,11 +45,18 @@ PARAM_A0 = 8
 FREQ_Q = 1.0
 
 
+# threshold to switch to analytical approximation
+# if abs(x) > threshold
 
-#constraints (to keep from escaping to infinity)\
+ANALYTIC_THRESHOLD_X = 1.0
+ANALYTIC_THRESHOLD_Y = 1.0
+
+
+
+#constraints (to keep from escaping to infinity)
 #limits are as +/- of this values
-VAL_X_LIMIT = 1055
-VAL_Y_LIMIT = 50
+VAL_X_LIMIT = 10
+VAL_Y_LIMIT = 10
 
 
 #save every

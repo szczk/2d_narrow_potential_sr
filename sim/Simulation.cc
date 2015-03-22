@@ -56,11 +56,11 @@ void Simulation::reset()
      if ( potential!=nullptr ) delete potential;
 
      int potentialType = this->settings->get ( "POTENTIAL_TYPE" );
-     double param_A = this->settings->get("PARAM_A");
-     double param_B = this->settings->get("PARAM_B");
-     double param_C = this->settings->get("PARAM_C");
-     double param_A0 = this->settings->get("PARAM_A0");
-     
+     double param_A = this->settings->get ( "PARAM_A" );
+     double param_B = this->settings->get ( "PARAM_B" );
+     double param_C = this->settings->get ( "PARAM_C" );
+     double param_A0 = this->settings->get ( "PARAM_A0" );
+
      switch ( potentialType ) {
      case 2:
           //modulated potential
@@ -89,8 +89,6 @@ void Simulation::run ( Datafile *df )
 
      this->reset();
 
-//      bool dump_gnuplot = false;
-
      double dt = this->settings->getDt();
      long double t = this->settings->getStartTime(); //t0
 
@@ -101,46 +99,44 @@ void Simulation::run ( Datafile *df )
      double sigma = this->settings->getNoiseIntensity();
      int noiseType = settings->get ( "NOISE_TYPE" );
 
-//   double endTime = 10.0;
-
 
      point current_point;
-
      current_point.x = this->settings->getX0();
      current_point.y = this->settings->getY0();
 
 
      double max_time = this->settings->get ( "max_time" );
 
-     
-     
-     double x_limit = abs(this->settings->get( "VAL_X_LIMIT"));
-     double y_limit = abs(this->settings->get( "VAL_Y_LIMIT"));
-     
-     
-     double saveTfromTime = this->settings->get( "save_traj_from_time");
-     
-//      double timeInState = 0.0;
-//      bool fileOkToSave = false;
-//      if ( this->dataFile!=nullptr ) {
-//           fileOkToSave = this->dataFile->ok();
-//      }
+
+     //thresholds to switch to analytic solution
+     double x_an_tr = abs ( this->settings->get ( "ANALYTIC_THRESHOLD_X" ) );
+     double y_an_tr = abs ( this->settings->get ( "ANALYTIC_THRESHOLD_Y" ) );
+
+     // hard limit to prevent escape to infinity
+     double x_limit = abs ( this->settings->get ( "VAL_X_LIMIT" ) );
+     double y_limit = abs ( this->settings->get ( "VAL_Y_LIMIT" ) );
+
+
+     double saveTfromTime = this->settings->get ( "save_traj_from_time" );
+
+
+
 
      while ( t <= max_time ) {
 
-       // save only if t >= defined time point 
-	  if( t >= saveTfromTime ) {
-          df->write(current_point.x);
-          df->write(current_point.y);
-	  }
-         
+          // save only if t >= defined time point
+          if ( t >= saveTfromTime ) {
+               df->write ( current_point.x );
+               df->write ( current_point.y );
+          }
+
 //        cout << "t="<<t<<endl;
           double * v ;
 
 
           switch ( noiseType ) {
           case 1:
-               v = rand->getAlphaStableVector ( alpha, sigma );
+               v = rand->getAlphaStableVector ( alpha );
                break;
           case 2:
           default:
@@ -149,49 +145,49 @@ void Simulation::run ( Datafile *df )
           }
 
 
-          // grad V(x,y)
-          vec potential = ( * ( this->potential ) ) ( current_point.x, current_point.y, t );
+          // ====================================
+          // X value
 
-//           cout << "v[0] = " << v[0] << "\tv[1] = " << v[1] <<endl;
+          if ( abs ( current_point.x ) > x_an_tr ) {
+               // above threshold, switch to analytical solution (approx)
+	       //cout << "t = "<< t << " x = " << current_point.x << " => ";
+               current_point.x = this->potential->getXanalytic ( current_point.x, current_point.y,dt ) + sigma * v[0]*dL;
+	       //cout <<  current_point.x << endl;
+          } else {
+               // below threshold, do numerical integration
+               double forcex = - ( this->potential->getXderiv ( current_point.x, current_point.y, t ) );
+               current_point.x += forcex*dt  + sigma * v[0]*dL;
+	       
+// 	       cout << "t = "<< t << " x = " << current_point.x << " \t numerical x" << endl;
+          }
 
-	  //cout << " t= " << t <<"\t";
-	  //cout << "x,y = " << current_point.x << ","<<current_point.y<<"\t v[0] = " << v[0] << "\t v[1]=" << v[1] <<"\t"; 
-	  //cout <<" V_x = " << potential.x << " \t V_y = " << potential.y << endl;
-	  
-          current_point.x += -potential.x*dt  + v[0]*dL;
-          current_point.y += -potential.y*dt  + v[1]*dL;
+          // hard boundaries
+          if ( current_point.x < -x_limit ) current_point.x = -x_limit;
+          else if ( current_point.x > x_limit ) current_point.x = x_limit;
 
-	  
-	  
-	  
+
+          // ====================================
+          // Y value
+
+          if ( abs ( current_point.y ) > y_an_tr ) {
+               // above threshold, switch to analytical solution (approx)
+               current_point.y = this->potential->getYanalytic ( current_point.x, current_point.y,dt ) + sigma * v[1]*dL;
+
+          } else {
+               // below threshold, do numerical integration
+               double forcey = - ( this->potential->getYderiv ( current_point.x, current_point.y, t ) );
+               current_point.y += forcey*dt  + sigma * v[1]*dL;
+          }
+
+          // hard boundaries
+          if ( current_point.y < -y_limit ) current_point.y = -y_limit;
+          else if ( current_point.y > y_limit ) current_point.y = y_limit;
+
+          //===================================================
+
+          // remember to delete vector
           delete[] v;
           t+= dt;
-
-          
-          bool overX = false;
-          //constraints
-          if( current_point.x < -x_limit) {
-	    current_point.x = -x_limit;
-	    overX = true; 
-	  }
-          else if (current_point.x > x_limit) { 
-	    current_point.x = x_limit;
-	    overX = true;
-	  }
-
-          if( current_point.y < -y_limit) current_point.y = -y_limit;
-          else if (current_point.y > y_limit) current_point.y = y_limit;
-          
-          
-          if(overX) {
-	    
-	    cout << "------------" << endl;
-	    cout << " t= " << t <<"\t";
-	   cout << "over limit!"<<"\t" << "x,y = " << current_point.x << ","<<current_point.y<<"\t v[0] = " << v[0] << "\t v[1]=" << v[1] <<endl; 
-	   cout <<" V_x = " << potential.x << " << \t V_y = " << potential.y << endl;
-	   exit(0);
-	    
-	  }
      }
 
 }
