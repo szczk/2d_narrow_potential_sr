@@ -151,11 +151,12 @@ void Simulation::run ( Datafile *df )
           if ( abs ( current_point.x ) > x_an_tr ) {
                // above threshold, switch to analytical solution (approx)
 	       //cout << "t = "<< t << " x = " << current_point.x << " => ";
-               current_point.x = this->potential->getXanalytic ( current_point.x, current_point.y,dt ) + sigma * v[0]*dL;
+               current_point.x = this->potential->getXanalytic ( current_point.x, current_point.y, t,  dt ) + sigma * v[0]*dL;
+	       
 	       //cout <<  current_point.x << endl;
           } else {
                // below threshold, do numerical integration
-               double forcex = - ( this->potential->getXderiv ( current_point.x, current_point.y, t ) );
+               double forcex = - ( this->potential->getXderiv ( current_point.x, current_point.y, t  ) );
                current_point.x += forcex*dt  + sigma * v[0]*dL;
 	       
 // 	       cout << "t = "<< t << " x = " << current_point.x << " \t numerical x" << endl;
@@ -171,7 +172,7 @@ void Simulation::run ( Datafile *df )
 
           if ( abs ( current_point.y ) > y_an_tr ) {
                // above threshold, switch to analytical solution (approx)
-               current_point.y = this->potential->getYanalytic ( current_point.x, current_point.y,dt ) + sigma * v[1]*dL;
+               current_point.y = this->potential->getYanalytic ( current_point.x, current_point.y, t, dt ) + sigma * v[1]*dL;
 
           } else {
                // below threshold, do numerical integration

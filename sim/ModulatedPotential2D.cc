@@ -48,14 +48,14 @@ double ModulatedPotential2D::getYderiv ( double &x, double &y, long double &t )
      return param_C * y*y*y;
 }
 
-double ModulatedPotential2D::getXanalytic ( double &x, double &y, double &t )
+double ModulatedPotential2D::getXanalytic ( double &x, double &y, long double &t , double &dt)
 {
   //just an approximation, since solving dx/dx = -b x^3 + a x - A sin(omega t)  is not so easy,
   // so we solve without modulation and just add modulation part later
-     return ( sqrt ( param_A ) *exp ( param_A * t ) *x ) / ( sqrt ( param_A + param_B*x*x* ( exp ( 2.0*param_A*t ) - 1.0 ) ) ) + param_A0 * sin ( 2.0 * M_PI* freq_Q * t );
+     return ( sqrt ( param_A ) *exp ( param_A * dt ) *x ) / ( sqrt ( param_A + param_B*x*x* ( exp ( 2.0*param_A*dt ) - 1.0 ) ) ) + param_A0 * sin ( 2.0 * M_PI* freq_Q * t ) * dt;
 }
 
-double ModulatedPotential2D::getYanalytic ( double &x, double &y, double &t )
+double ModulatedPotential2D::getYanalytic ( double &x, double &y, long double &t, double &dt )
 {
-     return ( y/ ( sqrt ( 1.0 + ( 2.0*param_B*t*y*y ) ) ) );
+     return ( y/ ( sqrt ( 1.0 + ( 2.0*param_B*dt*y*y ) ) ) );
 }

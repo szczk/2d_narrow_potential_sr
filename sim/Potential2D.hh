@@ -69,8 +69,8 @@ public:
      virtual double getXderiv(double &x, double &y, long double &t) = 0;
      virtual double getYderiv(double &x, double &y, long double &t) = 0;
      
-     virtual double getXanalytic(double &x, double &y, double &t) = 0;
-     virtual double getYanalytic(double &x, double &y, double &t) = 0;
+     virtual double getXanalytic(double &x, double &y, long double &t, double &dt) = 0;
+     virtual double getYanalytic(double &x, double &y, long double &t, double &dt) = 0;
 };
 
 

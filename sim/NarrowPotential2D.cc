@@ -50,12 +50,12 @@ double NarrowPotential2D::getYderiv ( double &x, double &y, long double &t )
 }
 
 
-double NarrowPotential2D::getXanalytic ( double &x, double &y, double &t )
+double NarrowPotential2D::getXanalytic ( double &x, double &y, long double &t, double &dt)
 {
-     return ( sqrt ( param_A ) *exp ( param_A * t ) *x ) / ( sqrt ( param_A + param_B*x*x* ( exp ( 2.0*param_A*t ) - 1.0 ) ) );
+     return ( sqrt ( param_A ) *exp ( param_A * dt ) *x ) / ( sqrt ( param_A + param_B*x*x* ( exp ( 2.0*param_A*dt ) - 1.0 ) ) );
 }
 
-double NarrowPotential2D::getYanalytic ( double &x, double &y, double &t )
+double NarrowPotential2D::getYanalytic ( double &x, double &y, long double &t , double &dt)
 {
-     return ( y/ ( sqrt ( 1.0 + ( 2.0*param_B*t*y*y ) ) ) );
+     return ( y/ ( sqrt ( 1.0 + ( 2.0*param_B*dt*y*y ) ) ) );
 }
