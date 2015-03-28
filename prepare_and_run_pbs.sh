@@ -51,9 +51,9 @@ for nt in 1
    do
      for alpha in 1.9 #$(seq -w 0.2 0.1 2.0)
       do
-      for sigma in 1 3 5  #$(seq -w 0.1 0.02 1.0)
+      for sigma in $(seq -w 1 0.2 10)
          do
-          for num in $(seq 1 100)
+          for num in $(seq 1 10)
            do
               echo "alpha = $alpha, sigma = $sigma, nt = $nt, pt = $pt n = $num"
               file="a_"$alpha"_s_"$sigma"_nt_"$nt"_pt_"$pt"_"$num".pbs"
