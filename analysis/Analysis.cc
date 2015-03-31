@@ -2,7 +2,7 @@
 
 
 
-Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs ( nullptr ), meanYs ( nullptr ), inLeftCounter ( nullptr ), inRightCounter ( nullptr ), rtd(nullptr),  calculated ( false )
+Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs ( nullptr ), meanYs ( nullptr ), inLeftCounter ( nullptr ), inRightCounter ( nullptr ), rtd ( nullptr ),  calculated ( false )
 {
 
 
@@ -11,7 +11,7 @@ Analysis::Analysis ( Settings*s ) : settings ( s ), meanXs ( nullptr ), meanYs (
 
 Analysis:: ~Analysis()
 {
-  cout << "delete Analysis"<<endl;
+     cout << "delete Analysis"<<endl;
 }
 
 
@@ -31,7 +31,7 @@ void Analysis::save()
      this->saveMean ( this->meanYs, "Y" );
 
      this->savePositions();
-     
+
      this->rtd->save();
 
 }
@@ -99,11 +99,11 @@ void Analysis::fill ( double t, double x, double y )
           ++ ( *leftCount );
      }
 
-     
-     
-    
-     
-     this->rtd->fill(t, x,y);
+
+
+
+
+     this->rtd->fill ( t, x,y );
 }
 
 
@@ -133,7 +133,7 @@ void Analysis::initAnalysis()
      this->inRightCounter = init ( this->inRightCounter );
 
 
-     this->rtd = new ResidenceTimeDistribution(this->settings);
+     this->rtd = new ResidenceTimeDistribution ( this->settings );
 
 }
 
@@ -141,15 +141,15 @@ void Analysis::deleteAnalysis()
 {
      cout << "deleting " << endl;
 
-     this->deleteMap(this->meanXs);
-     this->deleteMap(this->meanYs);
+     this->deleteMap ( this->meanXs );
+     this->deleteMap ( this->meanYs );
 
      delete this->inLeftCounter;
      delete this->inRightCounter;
-     
+
      delete this->rtd;
-     
-     
+
+
 
      cout << "all deleted"<<endl;
 }
@@ -225,14 +225,14 @@ void Analysis::saveMean ( std::map< double, RunningStat* >* meanPos, const char 
 
 //      int se = this->settings->get ( "SAVE_EVERY" );
 //      int saveEvery = se;
-     
 
-     
-     double saveAmplitudeFromT = this->settings->get ("AMPLITUDE_SAVE_FROM_T" );
+
+
+     double saveAmplitudeFromT = this->settings->get ( "AMPLITUDE_SAVE_FROM_T" );
 
      double max_mean_val = 0.0;
      double min_mean_val = 0.0;
-     
+
      for ( auto it = meanPos->begin(); it!= meanPos->end(); ++it ) {
 
 //           if ( ( saveEvery-- ) >0 ) {
@@ -254,19 +254,19 @@ void Analysis::saveMean ( std::map< double, RunningStat* >* meanPos, const char 
           output << t << "\t" << mean << "\t" << mean_err << "\t" << variance<< "\n";
           //}
 
-	  
-	  if( t > saveAmplitudeFromT ) {
-	    if(mean > max_mean_val) max_mean_val = mean;
-	    if(mean < min_mean_val) min_mean_val = mean;
-	  }
+
+          if ( t > saveAmplitudeFromT ) {
+               if ( mean > max_mean_val ) max_mean_val = mean;
+               if ( mean < min_mean_val ) min_mean_val = mean;
+          }
      }
-     
+
      sprintf ( datafileName,"%s_mean_%s_amplitude.txt", this->settings->getFullOutputFilesPrefix().c_str() , variable );
      sprintf ( dataFullPath,"%s/%s", this->settings->getStoragePath() , datafileName );
      ofstream amplOutput ( dataFullPath );
      amplOutput << "# alpha\tnoise_intensity\tmax(<"<<variable <<"<)-min(<"<<variable<<">)\n";
-     
-     amplOutput << this->settings->getJumpsParameter() << "\t" <<  this->settings->getNoiseIntensity() << "\t" << (max_mean_val - min_mean_val) << endl;
+
+     amplOutput << this->settings->getJumpsParameter() << "\t" <<  this->settings->getNoiseIntensity() << "\t" << ( max_mean_val - min_mean_val ) << endl;
      amplOutput.close();
      // output.flush();
 

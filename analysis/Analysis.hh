@@ -8,8 +8,6 @@
 #include "../tools/Datafile.hh"
 
 #include <typeinfo>
-// #include "../tools/TrajectoriesDatafilesIterator.hh"
-// #include "../tools/Utility.hh"
 
 // #include "MeanRsquared.hh"
 // #include "MarginalDistributions.hh"
@@ -71,19 +69,7 @@ public:
      ~Analysis();
 
 
-
-//      /**
-//       * when deleting Analysis object, this datafile iterator will NOT be deleted!
-//       */
-//      void setDatafilesIterator ( TrajectoriesDatafilesIterator * iter ) {
-//           if ( iter!=nullptr ) {
-//                this->trajIterator = iter;
-//                this->checkDatafiles();
-//           }
-//      }
-
-
-     /*
+     /**
       * Pass an open datafile to be iterated over t and filled from
       */
      void fillFromFile ( Datafile * );

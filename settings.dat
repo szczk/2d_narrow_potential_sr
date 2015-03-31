@@ -62,8 +62,12 @@ ANALYSIS_SAVE_EVERY = 10
 
 # histogram settings
 RTD_MIN = 0.0
-RTD_MAX = 1.0
-RTD_NBINS = 100
+RTD_MAX = 3.0
+RTD_NBINS = 300
+
+
+# treshold for states  (abs value)
+STATE_THRESHOLD_ABS = 0.4
 
 
 # mean amplitude save from t= 

@@ -35,9 +35,13 @@ private:
   
   // 
   double statesBorderX;
+  double stateThresholdAbs;
   double residenceTimeStart ;
   double lastPosition ;
   
+  double period;
+  int numberOfTransitions;
+  double x0;
   
   void init();
   void cleanUp();

@@ -32,7 +32,7 @@ public:
           return this->runningAverage->Mean();
      }
 
-     
+
      //double getT() { return this->t;}
 };
 

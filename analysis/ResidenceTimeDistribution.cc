@@ -30,8 +30,10 @@ void ResidenceTimeDistribution::init()
      this->tMax = this->settings->get("RTD_MAX");
      this->nBins = this->settings->get("RTD_NBINS");
      
-     
-     
+     this->x0 = this->settings->getX0();
+     this->stateThresholdAbs = this->settings->get("STATE_THRESHOLD_ABS");
+     this->numberOfTransitions = 0;
+     this->period = 1.0/this->settings->getFrequency();
      
   
      this->p_left = this->initHisto ( this->p_left );
@@ -108,7 +110,7 @@ void ResidenceTimeDistribution::saveHisto(gsl_histogram * histogram, const char 
      plotScript << "reset\n";
 //      plotScript << "set term png enhanced \n";
 
-     plotScript << "set title ' p(t_{"<< variable << "})  {/Symbol a} = " << this->settings->getJumpsParameter();
+     plotScript << "set title '{/Symbol a} = " << this->settings->getJumpsParameter();
      plotScript << " D = " << this->settings->getNoiseIntensity();
      plotScript << "'\n";
 
@@ -118,8 +120,8 @@ void ResidenceTimeDistribution::saveHisto(gsl_histogram * histogram, const char 
      plotScript << "set xrange ["<< this->tMin <<":"<< this->tMax << "]\n";
      plotScript << "set yrange [0:1]\n";
 
-     plotScript << "set xlabel 'residence time'\n";
-     plotScript << "set ylabel 'p(t_{"<< variable << "})'\n";
+     plotScript << "set xlabel 't_{"<< variable << "}/T_{(/Symbol O)}'\n";
+     plotScript << "set ylabel 'P(t_{"<< variable << "}/T_{(/Symbol O)})'\n";
 
 
      double dt = ( tMax-tMin ) / this->nBins;
@@ -156,11 +158,12 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
    //reset 
     
     residenceTimeStart = 0.0;
-    lastPosition = 0.0;
+    lastPosition = this->x0;
+    this->numberOfTransitions = 0;
 //     cout << "new traj"<<endl;
   }
   else {
-    if( x * lastPosition < 0.0 ) {
+    if( (x * lastPosition < 0.0) && ( abs(x) > this->stateThresholdAbs ) ) {
      //state changed 
       
       double residenceTime = t - residenceTimeStart;
@@ -168,15 +171,15 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
 //       cout << " state changed, old pos:" << lastPosition << " new pos: " << x << " residenceTime = " << residenceTime <<endl;
       if( x > statesBorderX ) {
 	// now is in right, so was in left
-        gsl_histogram_increment (this->p_left ,  residenceTime);
+        gsl_histogram_increment (this->p_left ,  residenceTime/period);
       }
       else if( x < statesBorderX ) {
 	//now is in left so was in right
-	gsl_histogram_increment (this->p_right ,  residenceTime);
+	gsl_histogram_increment (this->p_right ,  residenceTime/period);
       }
       
       //save summarized also
-      gsl_histogram_increment (this->p_total ,  residenceTime);
+      gsl_histogram_increment (this->p_total ,  residenceTime/period);
       
       residenceTimeStart = t;
     }
@@ -186,6 +189,7 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
     
     
     lastPosition = x;
+    ++(this->numberOfTransitions);
   }
   // we need to calculate residence time
   

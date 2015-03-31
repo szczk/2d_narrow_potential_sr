@@ -2,18 +2,21 @@
 
 
 
-TransitionsPerPeriod::TransitionsPerPeriod(Settings * s) {
-  this->settings = s;
-  
+TransitionsPerPeriod::TransitionsPerPeriod ( Settings * s )
+{
+     this->settings = s;
+
 }
 
 
-TransitionsPerPeriod::~TransitionsPerPeriod() {
-  
-  
+TransitionsPerPeriod::~TransitionsPerPeriod()
+{
+
+
 }
 
-void TransitionsPerPeriod::fill( double t, double x, double y ) {
-  
-  
+void TransitionsPerPeriod::fill ( double t, double x, double y )
+{
+
+
 }

@@ -3,21 +3,21 @@
 
 
 
-MeanRsquared::MeanRsquared (  ) : runningAverage(nullptr)
+MeanRsquared::MeanRsquared ( ) : runningAverage ( nullptr )
 {
-  this->runningAverage = new RunningStat();
-  //this->t = t;
+     this->runningAverage = new RunningStat();
+     //this->t = t;
 }
 
 
 MeanRsquared::~MeanRsquared()
 {
-  delete this->runningAverage;
+     delete this->runningAverage;
 }
 
 
 void MeanRsquared::add ( double x, double y )
 {
-  double rsqrd = x*x  + y*y;
-  this->runningAverage->Push(rsqrd);
+     double rsqrd = x*x  + y*y;
+     this->runningAverage->Push ( rsqrd );
 }
