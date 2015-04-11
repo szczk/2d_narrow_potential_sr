@@ -1,6 +1,6 @@
 #include "ResidenceTimeDistribution.hh"
 
-ResidenceTimeDistribution::ResidenceTimeDistribution ( Settings * s ) : settings ( s ), p_left ( nullptr ), p_right ( nullptr ), p_total ( nullptr ), number_of_transitions_per_period ( nullptr )
+ResidenceTimeDistribution::ResidenceTimeDistribution ( Settings * s ) : settings ( s ), p_left ( nullptr ), p_right ( nullptr ), p_total ( nullptr )
 {
 
      nBins = 100;
@@ -60,12 +60,14 @@ void ResidenceTimeDistribution::cleanUp()
      this->deleteHisto ( this->p_total );
 
      cout << "deleting map"<<endl;
-     for ( auto it=number_of_transitions_per_period->begin(); it!=number_of_transitions_per_period->end(); ++it) {
-       std::cout << it->first << " => " << *(it->second) << '\n';
+     if(number_of_transitions_per_period!=nullptr) {
+       
+      for ( auto it = number_of_transitions_per_period->begin(); it!= number_of_transitions_per_period->end(); ++it ) {
+               int * elem = ( it->second );
+               delete elem;
+          } 
+       delete this->number_of_transitions_per_period;
      }
-
-     cout << "deleting map"<<endl;
-     if(number_of_transitions_per_period!=nullptr) delete this->number_of_transitions_per_period;
 }
 
 
@@ -97,6 +99,8 @@ void ResidenceTimeDistribution::save()
      this->saveHisto ( this->p_left, "left" );
      this->saveHisto ( this->p_right, "right" );
      this->saveHisto ( this->p_total, "total" );
+     
+     this->saveTransitionsPerPeriod();
 }
 
 
@@ -162,6 +166,59 @@ void ResidenceTimeDistribution::saveHisto ( gsl_histogram * histogram, const cha
 }
 
 
+void ResidenceTimeDistribution::saveTransitionsPerPeriod()
+{
+
+
+     char datafileName[200];
+     char dataFullPath[200];
+//      char datafileNamePlot[200];
+     int max_transitions_to_save = 5; //from 0 to max_transitions_to_save inclusive
+     
+     sprintf ( datafileName,"%s_transitions_per_period.txt", this->settings->getFullOutputFilesPrefix().c_str()  );
+     sprintf ( dataFullPath,"%s/%s", this->settings->getStoragePath() , datafileName );
+     ofstream output ( dataFullPath );
+     
+     output << "# alpha\tnoise_intensity";
+     for( int t = 0; t < max_transitions_to_save; t++){
+       output <<"\tp_" << t ;
+     }
+     
+     output << "\t\t # P_n = probability of n transitions per period\n";
+     output << this->settings->getJumpsParameter() << "\t" <<  this->settings->getNoiseIntensity() ;
+	  
+     cout << " saving transitions per period "<< endl;
+
+
+     double norm = 0.0;
+     //calculate norm
+     for ( auto it=number_of_transitions_per_period->begin(); it!=number_of_transitions_per_period->end(); ++it) {
+       norm += *(it->second);
+     }
+     
+     for( int transitions = 0; transitions < max_transitions_to_save; transitions++){
+       double prob = 0.0;
+       if( this->number_of_transitions_per_period->find(transitions) != this->number_of_transitions_per_period->end() ) {
+	 
+	 prob = (  (*(this->number_of_transitions_per_period->at(transitions)))/norm );
+       }
+      
+       output << "\t" << prob;
+       
+     }
+     
+     output << "\n";
+//      for ( auto it=number_of_transitions_per_period->begin(); it!=number_of_transitions_per_period->end(); ++it) {
+//        std::cout << it->first << " => " << *(it->second) << " (" << (*(it->second))/norm  <<")\n";
+//      }
+
+
+
+
+     output.close();
+
+}
+
 
 
 
@@ -215,16 +272,16 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
      //detect new force period
      if ( t >= ( periodStartTime + period ) ) {
           //new period!
-          cout << "new period! t = " << t << " periodStartTime = " << periodStartTime << " period = " << period << endl;
+//           cout << "new period! t = " << t << " periodStartTime = " << periodStartTime << " period = " << period << endl;
           periodStartTime = t;
 
-          cout << "liczba przejsc w okresie: " << numberOfTransitions << endl;
+//           cout << "liczba przejsc w okresie: " << numberOfTransitions << endl;
 
-//           if ( this->number_of_transitions_per_period->find ( numberOfTransitions ) == this->number_of_transitions_per_period->end() ) {
-//                this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) = 1;
-//           } else {
-//                ( this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) ) ++;
-//           }
+          if ( this->number_of_transitions_per_period->find ( numberOfTransitions ) == this->number_of_transitions_per_period->end() ) {
+               this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) = new int(1);
+          } else {
+               (*( this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) )) ++;
+          }
 
           numberOfTransitions = 0;
      }

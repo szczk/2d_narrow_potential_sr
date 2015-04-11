@@ -61,6 +61,9 @@ private:
 
      void saveHisto ( gsl_histogram *, const char * );
 
+     void saveTransitionsPerPeriod();
+     
+     
 public:
 
      ResidenceTimeDistribution ( Settings * );
