@@ -1,18 +1,16 @@
 #include "ResidenceTimeDistribution.hh"
 
-ResidenceTimeDistribution::ResidenceTimeDistribution(Settings * s) : settings(s), p_left ( nullptr ), p_right ( nullptr ), p_total ( nullptr )
+ResidenceTimeDistribution::ResidenceTimeDistribution ( Settings * s ) : settings ( s ), p_left ( nullptr ), p_right ( nullptr ), p_total ( nullptr ), number_of_transitions_per_period ( nullptr )
 {
-    
-   nBins = 100;
-   tMin = 0.0;
-   tMax = 1.0;
-  
-  // 
-   statesBorderX = 0.0;
-   residenceTimeStart = 0.0;
-   lastPosition = 0.0;
-  
-   this->init();
+
+     nBins = 100;
+     tMin = 0.0;
+     tMax = 1.0;
+
+     //
+
+
+     this->init();
 }
 
 
@@ -25,17 +23,17 @@ ResidenceTimeDistribution::~ResidenceTimeDistribution()
 
 
 void ResidenceTimeDistribution::init()
-{ 
-     this->tMin = this->settings->get("RTD_MIN");
-     this->tMax = this->settings->get("RTD_MAX");
-     this->nBins = this->settings->get("RTD_NBINS");
-     
+{
+     this->tMin = this->settings->get ( "RTD_MIN" );
+     this->tMax = this->settings->get ( "RTD_MAX" );
+     this->nBins = this->settings->get ( "RTD_NBINS" );
+
      this->x0 = this->settings->getX0();
-     this->stateThresholdAbs = this->settings->get("STATE_THRESHOLD_ABS");
+     this->stateThresholdAbs = this->settings->get ( "STATE_THRESHOLD_ABS" );
      this->numberOfTransitions = 0;
      this->period = 1.0/this->settings->getFrequency();
-     
-  
+
+
      this->p_left = this->initHisto ( this->p_left );
      this->p_right = this->initHisto ( this->p_right );
      this->p_total = this->initHisto ( this->p_total );
@@ -43,6 +41,14 @@ void ResidenceTimeDistribution::init()
      if ( this->p_left==nullptr ) {
           cout << " p_left null again!"<<endl;
      }
+
+
+     this->statesBorderX = 0.0;
+     this->residenceTimeStart = 0.0;
+     this->lastPosition = 0.0;
+
+     this->periodStartTime = 0.0;
+     this->number_of_transitions_per_period = new map<int,int*>();
 }
 
 
@@ -52,6 +58,14 @@ void ResidenceTimeDistribution::cleanUp()
      this->deleteHisto ( this->p_left );
      this->deleteHisto ( this->p_right );
      this->deleteHisto ( this->p_total );
+
+     cout << "deleting map"<<endl;
+     for ( auto it=number_of_transitions_per_period->begin(); it!=number_of_transitions_per_period->end(); ++it) {
+       std::cout << it->first << " => " << *(it->second) << '\n';
+     }
+
+     cout << "deleting map"<<endl;
+     if(number_of_transitions_per_period!=nullptr) delete this->number_of_transitions_per_period;
 }
 
 
@@ -86,24 +100,24 @@ void ResidenceTimeDistribution::save()
 }
 
 
-void ResidenceTimeDistribution::saveHisto(gsl_histogram * histogram, const char * variable)
+void ResidenceTimeDistribution::saveHisto ( gsl_histogram * histogram, const char * variable )
 {
-     if(histogram==nullptr) {
-      cout << "NULL HISTOGRAM!!!"<<endl;
-      return;
+     if ( histogram==nullptr ) {
+          cout << "NULL HISTOGRAM!!!"<<endl;
+          return;
      }
-     
+
 
      char datafileName[200];
      char dataFullPath[200];
      char datafileNamePlot[200];
 
      sprintf ( datafileName,"%s_residence_time_distr_%s.txt", this->settings->getFullOutputFilesPrefix().c_str() , variable );
-     sprintf ( dataFullPath,"%s/%s", this->settings->getStoragePath() , datafileName );     
+     sprintf ( dataFullPath,"%s/%s", this->settings->getStoragePath() , datafileName );
      sprintf ( datafileNamePlot,"%s/%s_residence_time_distr_%s.plt",this->settings->getStoragePath(), this->settings->getFullOutputFilesPrefix().c_str() , variable );
-     
-     
-     
+
+
+
 
      ofstream plotScript ( datafileNamePlot ,ios_base::out );
 
@@ -128,10 +142,10 @@ void ResidenceTimeDistribution::saveHisto(gsl_histogram * histogram, const char 
      cout << "dt = " << dt << endl;
      double scale = 1.0/ ( gsl_histogram_sum ( histogram ) );
      cout << "scale: "<< scale << endl;
-     gsl_histogram_scale (histogram,  scale );
+     gsl_histogram_scale ( histogram,  scale );
 
-    
-     
+
+
      FILE * pFile = fopen ( dataFullPath,"w" );
 
      gsl_histogram_fprintf ( pFile,  histogram, "%g", "%g" );
@@ -154,45 +168,65 @@ void ResidenceTimeDistribution::saveHisto(gsl_histogram * histogram, const char 
 void ResidenceTimeDistribution::fill ( double t, double x, double y )
 {
 
-  if( t==0.0 ) {
-   //reset 
-    
-    residenceTimeStart = 0.0;
-    lastPosition = this->x0;
-    this->numberOfTransitions = 0;
+     if ( t==0.0 ) {
+          //reset
+
+          residenceTimeStart = 0.0;
+          lastPosition = this->x0;
+          this->numberOfTransitions = 0;
+
+          this->periodStartTime = t;
+
 //     cout << "new traj"<<endl;
-  }
-  else {
-    if( (x * lastPosition < 0.0) && ( abs(x) > this->stateThresholdAbs ) ) {
-     //state changed 
-      
-      double residenceTime = t - residenceTimeStart;
-      
+     } else {
+
+
+
+          if ( ( x * lastPosition < 0.0 ) && ( abs ( x ) > this->stateThresholdAbs ) ) {
+               //state changed
+
+               double residenceTime = t - residenceTimeStart;
+
 //       cout << " state changed, old pos:" << lastPosition << " new pos: " << x << " residenceTime = " << residenceTime <<endl;
-      if( x > statesBorderX ) {
-	// now is in right, so was in left
-        gsl_histogram_increment (this->p_left ,  residenceTime/period);
-      }
-      else if( x < statesBorderX ) {
-	//now is in left so was in right
-	gsl_histogram_increment (this->p_right ,  residenceTime/period);
-      }
-      
-      //save summarized also
-      gsl_histogram_increment (this->p_total ,  residenceTime/period);
-      
-      residenceTimeStart = t;
-    }
-    else {
-     // state not changed 
-    }
-    
-    
-    lastPosition = x;
-    ++(this->numberOfTransitions);
-  }
-  // we need to calculate residence time
-  
-  
+               if ( x > statesBorderX ) {
+                    // now is in right, so was in left
+                    gsl_histogram_increment ( this->p_left ,  residenceTime/period );
+               } else if ( x < statesBorderX ) {
+                    //now is in left so was in right
+                    gsl_histogram_increment ( this->p_right ,  residenceTime/period );
+               }
+
+               //save summarized also
+               gsl_histogram_increment ( this->p_total ,  residenceTime/period );
+
+               residenceTimeStart = t;
+
+               ++ ( this->numberOfTransitions );
+          } else {
+               // state not changed
+          }
+
+
+          lastPosition = x;
+
+
+     }
+
+     //detect new force period
+     if ( t >= ( periodStartTime + period ) ) {
+          //new period!
+          cout << "new period! t = " << t << " periodStartTime = " << periodStartTime << " period = " << period << endl;
+          periodStartTime = t;
+
+          cout << "liczba przejsc w okresie: " << numberOfTransitions << endl;
+
+//           if ( this->number_of_transitions_per_period->find ( numberOfTransitions ) == this->number_of_transitions_per_period->end() ) {
+//                this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) = 1;
+//           } else {
+//                ( this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) ) ++;
+//           }
+
+          numberOfTransitions = 0;
+     }
 }
 

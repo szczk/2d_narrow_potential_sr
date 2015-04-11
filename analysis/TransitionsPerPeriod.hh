@@ -8,7 +8,10 @@ using namespace std;
 
 /**
  * calculate probabilities of N transitions per period of modulating force
+ *
  * 
+ * 
+ * not used, see  ResidenceTimeDistribution::fill
  */
 
 
@@ -21,15 +24,15 @@ private:
      double forceFreq;
 
 public:
-  TransitionsPerPeriod(Settings *);
-  ~TransitionsPerPeriod();
+     TransitionsPerPeriod ( Settings * );
+     ~TransitionsPerPeriod();
 
      /**
       * add data for a given time point t
       */
-  void fill ( double t, double x, double y );
-     
-     
+     void fill ( double t, double x, double y );
+
+
 };
 
 
