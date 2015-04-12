@@ -40,7 +40,7 @@
 
 #PBS -q l_long
 
-#PBS -l nodes=1:ppn=1
+#PBS -l walltime=03:30:00
 
 #PBS -A "MNiSW/Zeus_lokalnie/UJ/052/2012"
 

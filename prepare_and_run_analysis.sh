@@ -44,15 +44,15 @@ echo "\n"
 export LC_NUMERIC="en_US.UTF-8"
 
 
-num=10
+num=1
 
 for nt in 1
  do
   for pt in 2
    do
-     for alpha in 1.0 1.2 1.4 1.6 1.8 #$(seq -w 0.2 0.1 2.0)
+     for alpha in 0.8 0.6 1.0 1.2 1.4 1.6 1.8 2.0 #$(seq -w 0.2 0.1 2.0)
       do
-       for sigma in $(seq -w 1 1 10)  #$(seq -w 0.1 0.05 1.0)
+       for sigma in $(seq -w 1 0.2 10)  #$(seq -w 0.1 0.05 1.0)
          do
               echo "alpha = $alpha, sigma = $sigma, nt = $nt, pt = $pt n = $num"
               file="a_"$alpha"_s_"$sigma"_nt_"$nt"_pt_"$pt"_"$num"_an.pbs"
