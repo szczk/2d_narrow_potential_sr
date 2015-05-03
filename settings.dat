@@ -1,12 +1,12 @@
-ntrajectories = 10000
+ntrajectories = 3000
 
 #jumps parameter (superdiffusion)
 alpha = 1.9
 
 starttime = 0.0
-max_time = 45.0
+max_time = 75.0
 
-save_traj_from_time = 0.0
+save_traj_from_time = 00.0
 
 # time step
 dt = 1.0e-3
@@ -71,7 +71,7 @@ STATE_THRESHOLD_ABS = 0.5
 
 
 # mean amplitude save from t= 
-AMPLITUDE_SAVE_FROM_T = 10
+AMPLITUDE_SAVE_FROM_T = 70
 
 ##########################################
 #not used
