@@ -45,7 +45,7 @@ void ResidenceTimeDistribution::init()
 
      this->statesBorderX = 0.0;
      this->residenceTimeStart = 0.0;
-     this->lastPosition = 0.0;
+     this->state = 1.0;
 
      this->periodStartTime = 0.0;
      this->number_of_transitions_per_period = new map<int,int*>();
@@ -229,7 +229,7 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
           //reset
 
           residenceTimeStart = 0.0;
-          lastPosition = this->x0;
+          state = (this->x0 > 0.0) ? 1.0 : -1.0;
           this->numberOfTransitions = 0;
 
           this->periodStartTime = t;
@@ -239,9 +239,9 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
 
 
 
-          if ( ( x * lastPosition < 0.0 ) && ( abs ( x ) > this->stateThresholdAbs ) ) {
+          if ( ( x * state < 0.0 ) && ( abs ( x ) > this->stateThresholdAbs ) ) {
                //state changed
-
+	       state = (-1.0)*x;
                double residenceTime = t - residenceTimeStart;
 
 //       cout << " state changed, old pos:" << lastPosition << " new pos: " << x << " residenceTime = " << residenceTime <<endl;
@@ -264,7 +264,7 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
           }
 
 
-          lastPosition = x;
+          
 
 
      }

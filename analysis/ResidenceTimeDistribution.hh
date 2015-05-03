@@ -38,7 +38,7 @@ private:
      double statesBorderX;
      double stateThresholdAbs;
      double residenceTimeStart ;
-     double lastPosition ;
+     double state ;
 
      double period;
      double periodStartTime;

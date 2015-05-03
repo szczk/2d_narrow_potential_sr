@@ -67,7 +67,7 @@ RTD_NBINS = 300
 
 
 # treshold for states  (abs value)
-STATE_THRESHOLD_ABS = 0.4
+STATE_THRESHOLD_ABS = 0.5
 
 
 # mean amplitude save from t= 
