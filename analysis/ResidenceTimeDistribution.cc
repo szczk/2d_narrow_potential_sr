@@ -32,7 +32,7 @@ void ResidenceTimeDistribution::init()
      this->stateThresholdAbs = this->settings->get ( "STATE_THRESHOLD_ABS" );
      this->numberOfTransitions = 0;
      this->period = 1.0/this->settings->getFrequency();
-
+     this->dt = this->settings->getDt();
 
      this->p_left = this->initHisto ( this->p_left );
      this->p_right = this->initHisto ( this->p_right );
@@ -193,14 +193,21 @@ void ResidenceTimeDistribution::saveTransitionsPerPeriod()
      double norm = 0.0;
      //calculate norm
      for ( auto it=number_of_transitions_per_period->begin(); it!=number_of_transitions_per_period->end(); ++it) {
-       norm += *(it->second);
+       int i =  (it->first);
+       int c =  *(it->second);
+       cout << " norm = " << norm << ", c("<<i<<") = " << c << endl;
+       norm += c;
+       
      }
+     
+     cout << " norm = " << norm << endl;
      
      for( int transitions = 0; transitions < max_transitions_to_save; transitions++){
        double prob = 0.0;
        if( this->number_of_transitions_per_period->find(transitions) != this->number_of_transitions_per_period->end() ) {
 	 
 	 prob = (  (*(this->number_of_transitions_per_period->at(transitions)))/norm );
+	 cout << "p(transitions) = "<< (*(this->number_of_transitions_per_period->at(transitions))) << "/" << norm << " = " <<  prob << endl;
        }
       
        output << "\t" << prob;
@@ -241,10 +248,10 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
 
           if ( ( x * state < 0.0 ) && ( abs ( x ) > this->stateThresholdAbs ) ) {
                //state changed
-	       state = (-1.0)*x;
+	       state = (-1.0)*state;
                double residenceTime = t - residenceTimeStart;
 
-//       cout << " state changed, old pos:" << lastPosition << " new pos: " << x << " residenceTime = " << residenceTime <<endl;
+//        cout << " state changed, old pos:" << state << " new pos: " << x << " residenceTime = " << residenceTime <<endl;
                if ( x > statesBorderX ) {
                     // now is in right, so was in left
                     gsl_histogram_increment ( this->p_left ,  residenceTime/period );
@@ -270,12 +277,12 @@ void ResidenceTimeDistribution::fill ( double t, double x, double y )
      }
 
      //detect new force period
-     if ( t >= ( periodStartTime + period ) ) {
+     if ( t + dt > ( periodStartTime + period ) ) {
           //new period!
-//           cout << "new period! t = " << t << " periodStartTime = " << periodStartTime << " period = " << period << endl;
+//            cout << "new period! t = " << t << " periodStartTime = " << periodStartTime << " period = " << period << endl;
           periodStartTime = t;
 
-//           cout << "liczba przejsc w okresie: " << numberOfTransitions << endl;
+//            cout << "liczba przejsc w okresie: " << numberOfTransitions << endl;
 
           if ( this->number_of_transitions_per_period->find ( numberOfTransitions ) == this->number_of_transitions_per_period->end() ) {
                this->number_of_transitions_per_period->operator[] ( numberOfTransitions ) = new int(1);

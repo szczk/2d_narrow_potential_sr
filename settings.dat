@@ -19,7 +19,7 @@ Y0 = 0.0
 
 
 #noise
-NOISE_D = 5
+NOISE_D = 2
 
 # 1 = uniform
 # 2 = discrete

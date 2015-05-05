@@ -40,6 +40,7 @@ private:
      double residenceTimeStart ;
      double state ;
 
+     double dt;
      double period;
      double periodStartTime;
      int numberOfTransitions;
