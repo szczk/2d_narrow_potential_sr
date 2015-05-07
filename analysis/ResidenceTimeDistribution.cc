@@ -142,11 +142,11 @@ void ResidenceTimeDistribution::saveHisto ( gsl_histogram * histogram, const cha
      plotScript << "set ylabel 'P(t_{"<< variable << "}/T_{(/Symbol O)})'\n";
 
 
-//      double dt = ( tMax-tMin ) / this->nBins;
-//      cout << "dt = " << dt << endl;
-//      double scale = 1.0/ ( gsl_histogram_sum ( histogram ) );
-//      cout << "scale: "<< scale << endl;
-//      gsl_histogram_scale ( histogram,  scale );
+     double dt = ( tMax-tMin ) / this->nBins;
+     cout << "dt = " << dt << endl;
+     double scale = 1.0/ ( gsl_histogram_sum ( histogram ) );
+     cout << "scale: "<< scale << endl;
+     gsl_histogram_scale ( histogram,  scale );
 
 
 
