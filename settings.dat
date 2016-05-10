@@ -1,10 +1,10 @@
-ntrajectories = 3000
+ntrajectories = 30
 
 #jumps parameter (superdiffusion)
 alpha = 1.9
 
 starttime = 0.0
-max_time = 75.0
+max_time = 5.0
 
 save_traj_from_time = 00.0
 
