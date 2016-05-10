@@ -4,7 +4,7 @@ ntrajectories = 30
 alpha = 1.9
 
 starttime = 0.0
-max_time = 5.0
+max_time = 1.0
 
 save_traj_from_time = 00.0
 

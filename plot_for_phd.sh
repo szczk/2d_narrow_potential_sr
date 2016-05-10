@@ -17,3 +17,5 @@ for alpha in 0.5 1.0 1.5 2.0 #$(seq -w 0.2 0.1 2.0)
 done 
 
 
+cd results
+./converter.x *.dat
